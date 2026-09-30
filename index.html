@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Custom Countdown Generator</title>
-  <!-- Curated Google Fonts popular for weddings & invitations -->
+  <title>Canva Countdown Studio</title>
+  
+  <!-- Curated Font Library (25+ Luxury Wedding & Editorial Fonts) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600&family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;1,6..96,400&family=Castoro+Titling&family=Cinzel:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Serif+Display&family=Great+Vibes&family=Italiana&family=Jost:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&family=Marcellus&family=Montserrat:wght@300;400;500&family=Mrs+Saint+Delafield&family=Outfit:wght@300;400;500&family=Parisienne&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Pinyon+Script&family=Prata&family=Quicksand:wght@400;500&family=Sacramento&family=Spectral:ital,wght@0,400;0,600;1,400&family=Tangerine:wght@700&family=WindSong:wght@500&family=Zen+Old+Mincho:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -28,78 +29,133 @@
       user-select: none;
     }
 
-    /* Embedded display mode */
     body.is-embed {
       overflow: hidden;
       height: 100vh;
+      width: 100vw;
     }
 
-    /* The Countdown Display */
-    .countdown-display {
+    /* Overall Embed Container */
+    .embed-wrapper {
       display: flex;
-      justify-content: space-around;
+      flex-direction: column;
       align-items: center;
-      width: 100%;
-      max-width: 650px;
+      justify-content: center;
       padding: 10px;
+      width: 100%;
     }
 
-    .num {
+    .countdown-title {
       text-align: center;
-      flex: 1;
-      line-height: 1;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      line-height: 1.2;
       transition: color 0.2s ease;
     }
 
-    /* Admin Generator Panel (visible only when configuring) */
+    .countdown-title.pos-below {
+      margin-top: 14px;
+      margin-bottom: 0;
+      order: 2;
+    }
+
+    /* Digits Row */
+    .countdown-display {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      order: 1;
+    }
+
+    .unit-container {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .num-slot {
+      text-align: center;
+      line-height: 1;
+      display: inline-block;
+      min-width: 1.1ch;
+      transition: color 0.2s ease;
+    }
+
+    .separator-colon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      margin: 0 4px;
+      font-weight: 300;
+      opacity: 0.8;
+    }
+
+    /* Admin Generator Panel */
     .generator-panel {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 24px;
-      width: 90%;
-      max-width: 520px;
-      margin-top: 30px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
-      color: #1e293b;
-    }
-
-    .generator-panel h2 {
-      font-size: 1.25rem;
-      margin-bottom: 16px;
-      font-weight: 600;
+      width: 95%;
+      max-width: 700px;
+      margin: 30px auto;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
       color: #0f172a;
     }
 
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 12px;
+    }
+
+    .panel-header h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin: 18px 0 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
     .form-group {
-      margin-bottom: 14px;
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
 
-    .form-row {
-      display: flex;
-      gap: 12px;
-    }
-
-    .form-row .form-group {
-      flex: 1;
+    .full-width {
+      grid-column: 1 / -1;
     }
 
     label {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 500;
-      color: #475569;
+      color: #334155;
     }
 
     input, select {
-      padding: 8px 12px;
+      padding: 9px 12px;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
-      font-size: 0.95rem;
-      outline: none;
+      font-size: 0.9rem;
       background: #f8fafc;
+      outline: none;
     }
 
     input:focus, select:focus {
@@ -107,29 +163,54 @@
       background: #ffffff;
     }
 
+    .toggles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #1e293b;
+    }
+
     .preview-box {
       border: 1px dashed #cbd5e1;
-      background: #fafaf9; /* subtle warm tint for preview */
-      border-radius: 8px;
-      padding: 20px 0;
-      margin-bottom: 16px;
+      background: #fafaf9;
+      border-radius: 10px;
+      padding: 30px 10px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      text-align: center;
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .output-section {
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid #f1f5f9;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
     }
 
     .output-url {
       width: 100%;
-      padding: 8px 10px;
+      padding: 10px;
       font-family: monospace;
       font-size: 0.8rem;
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       word-break: break-all;
     }
 
@@ -137,13 +218,13 @@
       width: 100%;
       background: #0f172a;
       color: #ffffff;
-      padding: 10px;
-      font-size: 0.9rem;
+      padding: 12px;
+      font-size: 0.95rem;
       font-weight: 500;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
 
     .copy-btn:hover {
@@ -153,58 +234,148 @@
 </head>
 <body>
 
-  <!-- Live Countdown Elements -->
+  <!-- Live Countdown Display Container -->
   <div id="previewContainer">
-    <div class="countdown-display" id="timer">
-      <div class="num" id="days">0</div>
-      <div class="num" id="hours">0</div>
-      <div class="num" id="mins">0</div>
-      <div class="num" id="secs">0</div>
+    <div class="embed-wrapper" id="embedWrapper">
+      <div class="countdown-title" id="titleDisplay">Until We Say I Do</div>
+      <div class="countdown-display" id="timerDisplay"></div>
     </div>
   </div>
 
   <!-- Admin Generator UI -->
   <div class="generator-panel" id="adminPanel">
-    <h2>Canva Countdown Link Generator</h2>
-
-    <div class="form-group">
-      <label for="eventDate">Wedding / Event Date & Time</label>
-      <input type="datetime-local" id="eventDate">
+    <div class="panel-header">
+      <h2>Canva Countdown Studio</h2>
+      <span style="font-size: 0.8rem; color: #64748b;">Custom Embed Link Builder</span>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label for="fontSelect">Typography Style</label>
-        <select id="fontSelect">
-          <option value="'Cormorant Garamond', Georgia, serif">Editorial Serif (Cormorant)</option>
-          <option value="'Playfair Display', Georgia, serif">Classic Serif (Playfair)</option>
-          <option value="'Cinzel', Georgia, serif">Roman Roman Caps (Cinzel)</option>
-          <option value="'Alex Brush', cursive">Romantic Calligraphy (Alex Brush)</option>
-          <option value="'Montserrat', sans-serif">Modern Minimalist (Montserrat)</option>
-        </select>
+    <!-- Title & Date Configuration -->
+    <div class="form-grid">
+      <div class="form-group full-width">
+        <label for="eventDate">Target Event Date & Time</label>
+        <input type="datetime-local" id="eventDate">
       </div>
 
       <div class="form-group">
-        <label for="textColor">Number Color</label>
+        <label for="titleText">Countdown Name / Title</label>
+        <input type="text" id="titleText" value="Until We Say I Do" placeholder="e.g. Until We Say I Do">
+      </div>
+
+      <div class="form-group">
+        <label for="titlePosition">Title Position</label>
+        <select id="titlePosition">
+          <option value="above">Above Numbers</option>
+          <option value="below">Below Numbers</option>
+          <option value="none">Hidden / Off</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Units Toggle Section -->
+    <div class="section-title">Units to Display</div>
+    <div class="toggles-grid">
+      <label class="toggle-item"><input type="checkbox" id="showYears"> Years</label>
+      <label class="toggle-item"><input type="checkbox" id="showMonths"> Months</label>
+      <label class="toggle-item"><input type="checkbox" id="showDays" checked> Days</label>
+      <label class="toggle-item"><input type="checkbox" id="showHours" checked> Hours</label>
+      <label class="toggle-item"><input type="checkbox" id="showMins" checked> Mins</label>
+      <label class="toggle-item"><input type="checkbox" id="showSecs" checked> Secs</label>
+    </div>
+
+    <!-- Colors Section -->
+    <div class="section-title">Color Palette</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="titleColor">Name / Title Color</label>
+        <input type="color" id="titleColor" value="#9f7d43">
+      </div>
+
+      <div class="form-group">
+        <label for="textColor">Primary Digits Color</label>
         <input type="color" id="textColor" value="#3b322a">
       </div>
+
+      <div class="form-group full-width">
+        <label for="lastDigitColor">Last Digit / Unit Accent Color (Highlights the final ticking unit)</label>
+        <input type="color" id="lastDigitColor" value="#bda061">
+      </div>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label for="fontSize">Font Size (px)</label>
-        <input type="number" id="fontSize" value="56" min="20" max="120">
+    <!-- Typography & Spacing -->
+    <div class="section-title">Design & Canva Layout Spacing</div>
+    <div class="form-grid">
+      <div class="form-group full-width">
+        <label for="fontSelect">Typography Style (25+ Wedding & Editorial Styles)</label>
+        <select id="fontSelect">
+          <optgroup label="Luxury & Editorial Serifs">
+            <option value="cormorant" selected>Cormorant Garamond (Timeless Wedding Luxury)</option>
+            <option value="cinzel">Cinzel (Regal Classical Roman)</option>
+            <option value="cinzel-dec">Cinzel Decorative (Ornate Serif)</option>
+            <option value="playfair">Playfair Display (High-End Magazine)</option>
+            <option value="bodoni">Bodoni Moda (High Contrast Fashion)</option>
+            <option value="italiana">Italiana (Italian Vogue Style)</option>
+            <option value="prata">Prata (Soft Elegant Serif)</option>
+            <option value="marcellus">Marcellus (Clean Roman Flare)</option>
+            <option value="dm-serif">DM Serif Display (Warm & Bold)</option>
+            <option value="lora">Lora (Contemporary Calligraphic Serif)</option>
+            <option value="spectral">Spectral (Literary & Editorial)</option>
+            <option value="castoro">Castoro Titling (Refined Monumental)</option>
+            <option value="zen-old">Zen Old Mincho (Poetic Antique Serif)</option>
+          </optgroup>
+          <optgroup label="Romantic Calligraphy & Script">
+            <option value="pinyon">Pinyon Script (Classic Aristocratic Calligraphy)</option>
+            <option value="alex-brush">Alex Brush (Flowing Wedding Script)</option>
+            <option value="great-vibes">Great Vibes (Formal Graceful Cursive)</option>
+            <option value="allura">Allura (Soft & Feminine Handwriting)</option>
+            <option value="parisienne">Parisienne (Bistro Chic Cursive)</option>
+            <option value="sacramento">Sacramento (Delicate Monoline Script)</option>
+            <option value="tangerine">Tangerine (Tall Flourished Calligraphy)</option>
+            <option value="windsong">WindSong (Artistic Modern Cursive)</option>
+            <option value="delafield">Mrs Saint Delafield (Vintage Ribbon Script)</option>
+          </optgroup>
+          <optgroup label="Clean Modern Sans-Serif">
+            <option value="montserrat">Montserrat (Clean Architectural Sans)</option>
+            <option value="jost">Jost (Minimalist Bauhaus Clean)</option>
+            <option value="outfit">Outfit (Soft Modern Geometric)</option>
+            <option value="quicksand">Quicksand (Friendly Rounded Light)</option>
+          </optgroup>
+        </select>
       </div>
 
       <div class="form-group">
+        <label for="fontSize">Digit Font Size (px)</label>
+        <input type="number" id="fontSize" value="54" min="18" max="150">
+      </div>
+
+      <div class="form-group">
+        <label for="titleSize">Title Font Size (px)</label>
+        <input type="number" id="titleSize" value="16" min="10" max="60">
+      </div>
+
+      <div class="form-group">
+        <label for="unitGap">Space Between Units (px for Canva artwork)</label>
+        <input type="range" id="unitGap" min="10" max="150" value="60">
+        <span id="unitGapVal" style="font-size: 0.75rem; color: #64748b; text-align: right;">60px gap</span>
+      </div>
+
+      <div class="form-group">
+        <label for="colonToggle">Colon Separator (:)</label>
+        <select id="colonToggle">
+          <option value="false">Off (Empty space for Canva lines/decorations)</option>
+          <option value="true">On (Show ':' between numbers)</option>
+        </select>
+      </div>
+
+      <div class="form-group full-width">
         <label for="leadingZero">Leading Zero (e.g. 04 vs 4)</label>
         <select id="leadingZero">
-          <option value="false">No (e.g. 4)</option>
-          <option value="true">Yes (e.g. 04)</option>
+          <option value="false">No Leading Zero (4, 10, 28)</option>
+          <option value="true">Include Leading Zero (04, 10, 28)</option>
         </select>
       </div>
     </div>
 
+    <!-- Output Section -->
     <div class="output-section">
       <label>Your Canva Embed Link:</label>
       <input type="text" class="output-url" id="generatedLink" readonly>
@@ -216,151 +387,333 @@
     const urlParams = new URLSearchParams(window.location.search);
     const isEmbed = urlParams.get('embed') === 'true' || urlParams.has('date');
 
-    // DOM Elements
-    const adminPanel = document.getElementById('adminPanel');
-    const timer = document.getElementById('timer');
-    const numEls = document.querySelectorAll('.num');
-    const daysEl = document.getElementById('days');
-    const hoursEl = document.getElementById('hours');
-    const minsEl = document.getElementById('mins');
-    const secsEl = document.getElementById('secs');
-
-    // Controls
-    const eventDateInput = document.getElementById('eventDate');
-    const fontSelect = document.getElementById('fontSelect');
-    const textColorInput = document.getElementById('textColor');
-    const fontSizeInput = document.getElementById('fontSize');
-    const leadingZeroSelect = document.getElementById('leadingZero');
-    const generatedLinkInput = document.getElementById('generatedLink');
-    const copyBtn = document.getElementById('copyBtn');
-
-    // State Variables
-    let targetTime = Date.now() + (30 * 86400000); // default +30 days
-    let usePad = false;
-
-    // Font mapping helper
     const fontMap = {
       'cormorant': "'Cormorant Garamond', Georgia, serif",
-      'playfair': "'Playfair Display', Georgia, serif",
       'cinzel': "'Cinzel', Georgia, serif",
+      'cinzel-dec': "'Cinzel Decorative', Georgia, serif",
+      'playfair': "'Playfair Display', Georgia, serif",
+      'bodoni': "'Bodoni Moda', Georgia, serif",
+      'italiana': "'Italiana', Georgia, serif",
+      'prata': "'Prata', Georgia, serif",
+      'marcellus': "'Marcellus', Georgia, serif",
+      'dm-serif': "'DM Serif Display', Georgia, serif",
+      'lora': "'Lora', Georgia, serif",
+      'spectral': "'Spectral', Georgia, serif",
+      'castoro': "'Castoro Titling', Georgia, serif",
+      'zen-old': "'Zen Old Mincho', serif",
+      'pinyon': "'Pinyon Script', cursive",
       'alex-brush': "'Alex Brush', cursive",
-      'montserrat': "'Montserrat', sans-serif"
+      'great-vibes': "'Great Vibes', cursive",
+      'allura': "'Allura', cursive",
+      'parisienne': "'Parisienne', cursive",
+      'sacramento': "'Sacramento', cursive",
+      'tangerine': "'Tangerine', cursive",
+      'windsong': "'WindSong', cursive",
+      'delafield': "'Mrs Saint Delafield', cursive",
+      'montserrat': "'Montserrat', sans-serif",
+      'jost': "'Jost', sans-serif",
+      'outfit': "'Outfit', sans-serif",
+      'quicksand': "'Quicksand', sans-serif"
     };
 
-    const reverseFontMap = {
-      "'Cormorant Garamond', Georgia, serif": 'cormorant',
-      "'Playfair Display', Georgia, serif": 'playfair',
-      "'Cinzel', Georgia, serif": 'cinzel',
-      "'Alex Brush', cursive": 'alex-brush',
-      "'Montserrat', sans-serif": 'montserrat'
+    let targetTime = Date.now() + (92 * 86400000);
+    let config = {
+      title: 'Until We Say I Do',
+      titlePos: 'above', // above, below, none
+      titleColor: '9f7d43',
+      titleSize: 16,
+      font: 'cormorant',
+      color: '3b322a',
+      lastColor: 'bda061',
+      size: 54,
+      gap: 60,
+      colon: false,
+      pad: false,
+      years: false,
+      months: false,
+      days: true,
+      hours: true,
+      mins: true,
+      secs: true
     };
 
-    // 1. EMBED MODE DETECTED (Running inside Canva)
+    const timerDisplay = document.getElementById('timerDisplay');
+    const titleDisplay = document.getElementById('titleDisplay');
+    const adminPanel = document.getElementById('adminPanel');
+
+    // 1. EMBED MODE (Inside Canva)
     if (isEmbed) {
       document.body.classList.add('is-embed');
       adminPanel.style.display = 'none';
 
-      // Parse parameters from Canva embed URL
-      const dateParam = urlParams.get('date');
-      const colorParam = urlParams.get('color');
-      const fontParam = urlParams.get('font');
-      const sizeParam = urlParams.get('size');
-      const padParam = urlParams.get('pad');
+      const dateP = urlParams.get('date');
+      if (dateP) targetTime = new Date(dateP).getTime();
 
-      if (dateParam) targetTime = new Date(dateParam).getTime();
-      if (colorParam) {
-        numEls.forEach(el => el.style.color = `#${colorParam.replace('#', '')}`);
-      }
-      if (fontParam && fontMap[fontParam]) {
-        numEls.forEach(el => el.style.fontFamily = fontMap[fontParam]);
-      }
-      if (sizeParam) {
-        numEls.forEach(el => el.style.fontSize = `${sizeParam}px`);
-      }
-      if (padParam === 'true') {
-        usePad = true;
-      }
+      config.title = urlParams.get('title') !== null ? urlParams.get('title') : config.title;
+      config.titlePos = urlParams.get('tpos') || config.titlePos;
+      config.titleColor = urlParams.get('tcolor') || config.titleColor;
+      config.titleSize = parseInt(urlParams.get('tsize')) || config.titleSize;
+
+      config.color = urlParams.get('color') || config.color;
+      config.lastColor = urlParams.get('lcolor') || config.lastColor;
+      config.font = urlParams.get('font') || config.font;
+      config.size = parseInt(urlParams.get('size')) || config.size;
+      config.gap = parseInt(urlParams.get('gap')) || config.gap;
+      config.colon = urlParams.get('colon') === 'true';
+      config.pad = urlParams.get('pad') === 'true';
+
+      if (urlParams.has('y')) config.years = urlParams.get('y') === '1';
+      if (urlParams.has('m')) config.months = urlParams.get('m') === '1';
+      if (urlParams.has('d')) config.days = urlParams.get('d') === '1';
+      if (urlParams.has('h')) config.hours = urlParams.get('h') === '1';
+      if (urlParams.has('min')) config.mins = urlParams.get('min') === '1';
+      if (urlParams.has('s')) config.secs = urlParams.get('s') === '1';
+
+      buildDOM();
     } 
-    // 2. GENERATOR / ADMIN MODE DETECTED (You building links)
+    // 2. ADMIN GENERATOR MODE
     else {
-      // Put preview in container
       document.getElementById('previewContainer').classList.add('preview-box');
 
-      // Set default input date to 30 days ahead
-      const defaultDate = new Date(Date.now() + 30 * 86400000);
+      const eventDateInput = document.getElementById('eventDate');
+      const titleTextInput = document.getElementById('titleText');
+      const titlePosInput = document.getElementById('titlePosition');
+      const titleColorInput = document.getElementById('titleColor');
+      const titleSizeInput = document.getElementById('titleSize');
+
+      const textColorInput = document.getElementById('textColor');
+      const lastDigitColorInput = document.getElementById('lastDigitColor');
+      const fontSelect = document.getElementById('fontSelect');
+      const fontSizeInput = document.getElementById('fontSize');
+      const unitGapInput = document.getElementById('unitGap');
+      const unitGapVal = document.getElementById('unitGapVal');
+      const colonToggle = document.getElementById('colonToggle');
+      const leadingZero = document.getElementById('leadingZero');
+
+      const showYears = document.getElementById('showYears');
+      const showMonths = document.getElementById('showMonths');
+      const showDays = document.getElementById('showDays');
+      const showHours = document.getElementById('showHours');
+      const showMins = document.getElementById('showMins');
+      const showSecs = document.getElementById('showSecs');
+
+      const generatedLink = document.getElementById('generatedLink');
+      const copyBtn = document.getElementById('copyBtn');
+
+      const defaultDate = new Date(Date.now() + (92 * 86400000) + (10 * 3600000));
       defaultDate.setMinutes(defaultDate.getMinutes() - defaultDate.getTimezoneOffset());
       eventDateInput.value = defaultDate.toISOString().slice(0, 16);
       targetTime = new Date(eventDateInput.value).getTime();
 
-      function updateAdminSettings() {
+      function updateFromUI() {
         if (eventDateInput.value) {
           targetTime = new Date(eventDateInput.value).getTime();
         }
-        usePad = leadingZeroSelect.value === 'true';
+        config.title = titleTextInput.value;
+        config.titlePos = titlePosInput.value;
+        config.titleColor = titleColorInput.value.replace('#', '');
+        config.titleSize = titleSizeInput.value;
 
-        // Apply visual updates to preview
-        numEls.forEach(el => {
-          el.style.fontFamily = fontSelect.value;
-          el.style.color = textColorInput.value;
-          el.style.fontSize = `${fontSizeInput.value}px`;
+        config.color = textColorInput.value.replace('#', '');
+        config.lastColor = lastDigitColorInput.value.replace('#', '');
+        config.font = fontSelect.value;
+        config.size = fontSizeInput.value;
+        config.gap = unitGapInput.value;
+        config.colon = colonToggle.value === 'true';
+        config.pad = leadingZero.value === 'true';
+
+        config.years = showYears.checked;
+        config.months = showMonths.checked;
+        config.days = showDays.checked;
+        config.hours = showHours.checked;
+        config.mins = showMins.checked;
+        config.secs = showSecs.checked;
+
+        unitGapVal.innerText = `${config.gap}px gap`;
+
+        buildDOM();
+
+        const base = window.location.origin + window.location.pathname;
+        const dateIso = eventDateInput.value ? new Date(eventDateInput.value).toISOString() : '';
+        const params = new URLSearchParams({
+          date: dateIso,
+          title: config.title,
+          tpos: config.titlePos,
+          tcolor: config.titleColor,
+          tsize: config.titleSize,
+          color: config.color,
+          lcolor: config.lastColor,
+          font: config.font,
+          size: config.size,
+          gap: config.gap,
+          colon: config.colon,
+          pad: config.pad,
+          y: config.years ? '1' : '0',
+          m: config.months ? '1' : '0',
+          d: config.days ? '1' : '0',
+          h: config.hours ? '1' : '0',
+          min: config.mins ? '1' : '0',
+          s: config.secs ? '1' : '0',
+          embed: 'true'
         });
 
-        // Build clean embed URL
-        const baseUrl = window.location.origin + window.location.pathname;
-        const fontKey = reverseFontMap[fontSelect.value] || 'cormorant';
-        const hexColor = textColorInput.value.replace('#', '');
-        const dateIso = eventDateInput.value ? new Date(eventDateInput.value).toISOString() : '';
-
-        const embedUrl = `${baseUrl}?date=${encodeURIComponent(dateIso)}&color=${hexColor}&font=${fontKey}&size=${fontSizeInput.value}&pad=${usePad}&embed=true`;
-        generatedLinkInput.value = embedUrl;
+        generatedLink.value = `${base}?${params.toString()}`;
       }
 
-      // Event listeners for instant live editing
-      eventDateInput.addEventListener('input', updateAdminSettings);
-      fontSelect.addEventListener('change', updateAdminSettings);
-      textColorInput.addEventListener('input', updateAdminSettings);
-      fontSizeInput.addEventListener('input', updateAdminSettings);
-      leadingZeroSelect.addEventListener('change', updateAdminSettings);
+      eventDateInput.addEventListener('input', updateFromUI);
+      titleTextInput.addEventListener('input', updateFromUI);
+      titlePosInput.addEventListener('change', updateFromUI);
+      titleColorInput.addEventListener('input', updateFromUI);
+      titleSizeInput.addEventListener('input', updateFromUI);
+
+      textColorInput.addEventListener('input', updateFromUI);
+      lastDigitColorInput.addEventListener('input', updateFromUI);
+      fontSelect.addEventListener('change', updateFromUI);
+      fontSizeInput.addEventListener('input', updateFromUI);
+      unitGapInput.addEventListener('input', updateFromUI);
+      colonToggle.addEventListener('change', updateFromUI);
+      leadingZero.addEventListener('change', updateFromUI);
+
+      showYears.addEventListener('change', updateFromUI);
+      showMonths.addEventListener('change', updateFromUI);
+      showDays.addEventListener('change', updateFromUI);
+      showHours.addEventListener('change', updateFromUI);
+      showMins.addEventListener('change', updateFromUI);
+      showSecs.addEventListener('change', updateFromUI);
 
       copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(generatedLinkInput.value);
+        navigator.clipboard.writeText(generatedLink.value);
         copyBtn.innerText = "Copied to Clipboard!";
-        copyBtn.style.background = "#15803d"; // green
+        copyBtn.style.background = "#15803d";
         setTimeout(() => {
           copyBtn.innerText = "Copy Link for Canva";
           copyBtn.style.background = "#0f172a";
         }, 2000);
       });
 
-      updateAdminSettings();
+      updateFromUI();
     }
 
-    // Live Countdown Interval
-    function runTimer() {
-      const diff = targetTime - Date.now();
+    // Build the visual elements
+    function buildDOM() {
+      // 1. Title handling
+      if (config.titlePos === 'none' || !config.title) {
+        titleDisplay.style.display = 'none';
+      } else {
+        titleDisplay.style.display = 'block';
+        titleDisplay.innerText = config.title;
+        titleDisplay.style.color = `#${config.titleColor}`;
+        titleDisplay.style.fontSize = `${config.titleSize}px`;
+        titleDisplay.style.fontFamily = fontMap[config.font] || 'serif';
+        if (config.titlePos === 'below') {
+          titleDisplay.classList.add('pos-below');
+        } else {
+          titleDisplay.classList.remove('pos-below');
+        }
+      }
+
+      // 2. Digits handling
+      timerDisplay.innerHTML = '';
+      const activeUnits = [];
+      if (config.years) activeUnits.push('years');
+      if (config.months) activeUnits.push('months');
+      if (config.days) activeUnits.push('days');
+      if (config.hours) activeUnits.push('hours');
+      if (config.mins) activeUnits.push('mins');
+      if (config.secs) activeUnits.push('secs');
+
+      activeUnits.forEach((unitKey, index) => {
+        const isLast = (index === activeUnits.length - 1);
+        const wrap = document.createElement('div');
+        wrap.className = 'unit-container';
+
+        if (index > 0) {
+          wrap.style.marginLeft = `${config.gap}px`;
+        }
+
+        const slot = document.createElement('span');
+        slot.className = 'num-slot';
+        slot.id = `unit-${unitKey}`;
+        slot.style.fontFamily = fontMap[config.font] || 'serif';
+        slot.style.fontSize = `${config.size}px`;
+        
+        // Color logic: Last unit receives accent color; all others receive primary digits color
+        slot.style.color = isLast ? `#${config.lastColor}` : `#${config.color}`;
+        slot.innerText = config.pad ? '00' : '0';
+
+        wrap.appendChild(slot);
+
+        // Colon separator
+        if (config.colon && !isLast) {
+          const colon = document.createElement('span');
+          colon.className = 'separator-colon';
+          colon.style.fontFamily = fontMap[config.font] || 'serif';
+          colon.style.fontSize = `${Math.round(config.size * 0.85)}px`;
+          colon.style.color = `#${config.color}`;
+          colon.style.marginLeft = `${Math.round(config.gap / 2)}px`;
+          colon.innerText = ':';
+          wrap.appendChild(colon);
+        }
+
+        timerDisplay.appendChild(wrap);
+      });
+
+      renderCalculations();
+    }
+
+    // Interval Calculation
+    function renderCalculations() {
+      const now = new Date();
+      const target = new Date(targetTime);
+      let diff = target.getTime() - now.getTime();
+
+      let years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0;
 
       if (diff > 0) {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        if (config.years || config.months) {
+          let tempDate = new Date(now.getTime());
 
-        const format = (n) => (usePad && n < 10) ? `0${n}` : n;
+          if (config.years) {
+            let y = target.getFullYear() - tempDate.getFullYear();
+            tempDate.setFullYear(tempDate.getFullYear() + y);
+            if (tempDate > target) { y--; tempDate.setFullYear(tempDate.getFullYear() - 1); }
+            years = Math.max(0, y);
+          }
 
-        daysEl.innerText = format(days);
-        hoursEl.innerText = format(hours);
-        minsEl.innerText = format(minutes);
-        secsEl.innerText = format(seconds);
-      } else {
-        daysEl.innerText = usePad ? "00" : "0";
-        hoursEl.innerText = usePad ? "00" : "0";
-        minsEl.innerText = usePad ? "00" : "0";
-        secsEl.innerText = usePad ? "00" : "0";
+          if (config.months) {
+            let m = 0;
+            while (true) {
+              let nextMonth = new Date(tempDate.getTime());
+              nextMonth.setMonth(nextMonth.getMonth() + 1);
+              if (nextMonth <= target) {
+                m++;
+                tempDate = nextMonth;
+              } else {
+                break;
+              }
+            }
+            months = m;
+          }
+          diff = target.getTime() - tempDate.getTime();
+        }
+
+        days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        seconds = Math.floor((diff % (1000 * 60)) / 1000);
       }
+
+      const format = (n) => (config.pad && n < 10) ? `0${n}` : `${n}`;
+
+      if (config.years && document.getElementById('unit-years')) document.getElementById('unit-years').innerText = format(years);
+      if (config.months && document.getElementById('unit-months')) document.getElementById('unit-months').innerText = format(months);
+      if (config.days && document.getElementById('unit-days')) document.getElementById('unit-days').innerText = format(days);
+      if (config.hours && document.getElementById('unit-hours')) document.getElementById('unit-hours').innerText = format(hours);
+      if (config.mins && document.getElementById('unit-mins')) document.getElementById('unit-mins').innerText = format(minutes);
+      if (config.secs && document.getElementById('unit-secs')) document.getElementById('unit-secs').innerText = format(seconds);
     }
 
-    setInterval(runTimer, 1000);
-    runTimer();
+    setInterval(renderCalculations, 1000);
   </script>
 </body>
 </html>
