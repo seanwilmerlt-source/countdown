@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canva Countdown Studio</title>
+  <title>When's the date countdown</title>
   
-  <!-- Curated Font Library (25+ Luxury Wedding & Editorial Fonts) -->
+  <!-- Curated Google Fonts Organized by Event Vibe -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;1,6..96,400&family=Castoro+Titling&family=Cinzel:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Serif+Display&family=Great+Vibes&family=Italiana&family=Jost:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&family=Marcellus&family=Montserrat:wght@300;400;500&family=Mrs+Saint+Delafield&family=Outfit:wght@300;400;500&family=Parisienne&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Pinyon+Script&family=Prata&family=Quicksand:wght@400;500&family=Sacramento&family=Spectral:ital,wght@0,400;0,600;1,400&family=Tangerine:wght@700&family=WindSong:wght@500&family=Zen+Old+Mincho:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;1,6..96,400&family=Castoro+Titling&family=Cinzel:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=Comfortaa:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Serif+Display&family=Fredoka:wght@400;600&family=Great+Vibes&family=Italiana&family=Jost:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Marcellus&family=Montserrat:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&family=Parisienne&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Pinyon+Script&family=Prata&family=Quicksand:wght@400;600&family=Righteous&family=Sacramento&family=Shrikhand&family=Space+Grotesk:wght@400;600&family=Spectral:ital,wght@0,400;0,600&family=Syne:wght@500;700&family=Tangerine:wght@700&family=WindSong:wght@500&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -29,108 +29,160 @@
       user-select: none;
     }
 
+    /* Embedded Mode (Inside Canva) */
     body.is-embed {
       overflow: hidden;
       height: 100vh;
       width: 100vw;
+      background: transparent !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Overall Embed Container */
+    /* App Header (Generator Only) */
+    .app-header {
+      text-align: center;
+      margin: 40px 0 20px;
+    }
+
+    .app-header h1 {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 1.85rem;
+      letter-spacing: 0.12em;
+      color: #1e1b18;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .app-header p {
+      font-size: 0.88rem;
+      color: #78716c;
+      margin-top: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    /* Live Preview Stage (Placed Prominently in Center) */
+    .preview-stage {
+      width: 95%;
+      max-width: 860px;
+      background: #faf8f5;
+      border: 1px solid #ebd9c8;
+      border-radius: 16px;
+      padding: 50px 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px -2px rgba(46, 38, 32, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: auto;
+    }
+
+    body.is-embed .preview-stage {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+
+    /* Floating Countdown Container */
     .embed-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 10px;
       width: 100%;
     }
 
     .countdown-title {
       text-align: center;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       line-height: 1.2;
       transition: color 0.2s ease;
     }
 
     .countdown-title.pos-below {
-      margin-top: 14px;
+      margin-top: 18px;
       margin-bottom: 0;
       order: 2;
     }
 
-    /* Digits Row */
     .countdown-display {
       display: inline-flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       order: 1;
     }
 
-    .unit-container {
-      display: inline-flex;
+    .unit-column {
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
     .num-slot {
       text-align: center;
       line-height: 1;
       display: inline-block;
-      min-width: 1.1ch;
+      min-width: 1.15ch;
       transition: color 0.2s ease;
     }
 
-    .separator-colon {
+    .unit-label {
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      margin-top: 8px;
+      line-height: 1;
+      transition: color 0.2s ease;
+      font-weight: 500;
+    }
+
+    .colon-separator {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       line-height: 1;
-      margin: 0 4px;
       font-weight: 300;
-      opacity: 0.8;
+      user-select: none;
     }
 
-    /* Admin Generator Panel */
+    /* Generator Studio Controls */
     .generator-panel {
       background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 24px;
+      border: 1px solid #e7e5e4;
+      border-radius: 16px;
+      padding: 30px;
       width: 95%;
-      max-width: 700px;
-      margin: 30px auto;
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
-      color: #0f172a;
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #f1f5f9;
-      padding-bottom: 12px;
-    }
-
-    .panel-header h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
+      max-width: 860px;
+      margin-bottom: 60px;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+      color: #1c1917;
     }
 
     .section-title {
       font-size: 0.82rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #64748b;
-      margin: 18px 0 10px;
+      letter-spacing: 0.06em;
+      color: #78716c;
+      margin: 22px 0 12px;
+      border-bottom: 1px solid #f5f5f4;
+      padding-bottom: 6px;
     }
 
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 16px;
     }
 
     .form-group {
@@ -146,110 +198,100 @@
     label {
       font-size: 0.82rem;
       font-weight: 500;
-      color: #334155;
+      color: #44403c;
     }
 
     input, select {
-      padding: 9px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
+      padding: 10px 12px;
+      border: 1px solid #d6d3d1;
+      border-radius: 8px;
       font-size: 0.9rem;
-      background: #f8fafc;
+      background: #fafaf9;
       outline: none;
+      color: #1c1917;
     }
 
     input:focus, select:focus {
-      border-color: #3b82f6;
+      border-color: #b38f4e;
       background: #ffffff;
     }
 
     .toggles-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 10px;
-      background: #f8fafc;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 12px;
+      background: #fafaf9;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #e7e5e4;
     }
 
     .toggle-item {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       cursor: pointer;
       font-size: 0.85rem;
-      color: #1e293b;
-    }
-
-    .preview-box {
-      border: 1px dashed #cbd5e1;
-      background: #fafaf9;
-      border-radius: 10px;
-      padding: 30px 10px;
-      margin-bottom: 20px;
-      overflow-x: auto;
-      text-align: center;
-      min-height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      color: #292524;
     }
 
     .output-section {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid #e2e8f0;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #e7e5e4;
     }
 
     .output-url {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       font-family: monospace;
-      font-size: 0.8rem;
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      margin-bottom: 10px;
+      font-size: 0.82rem;
+      background: #f5f5f4;
+      border: 1px solid #d6d3d1;
+      border-radius: 8px;
+      margin-bottom: 12px;
       word-break: break-all;
     }
 
     .copy-btn {
       width: 100%;
-      background: #0f172a;
-      color: #ffffff;
-      padding: 12px;
+      background: #1c1917;
+      color: #fbf9f5;
+      padding: 14px;
       font-size: 0.95rem;
       font-weight: 500;
+      letter-spacing: 0.05em;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .copy-btn:hover {
-      background: #1e293b;
+      background: #b38f4e;
     }
   </style>
 </head>
 <body>
 
-  <!-- Live Countdown Display Container -->
-  <div id="previewContainer">
+  <!-- App Header (Hidden when embedded) -->
+  <header class="app-header" id="appHeader">
+    <h1>When's the date countdown</h1>
+    <p>Minimalist, transparent countdown embeds for Canva designs & websites</p>
+  </header>
+
+  <!-- Centered Live Countdown Stage -->
+  <div class="preview-stage" id="previewStage">
     <div class="embed-wrapper" id="embedWrapper">
       <div class="countdown-title" id="titleDisplay">Until We Say I Do</div>
       <div class="countdown-display" id="timerDisplay"></div>
     </div>
   </div>
 
-  <!-- Admin Generator UI -->
+  <!-- Admin Studio Generator -->
   <div class="generator-panel" id="adminPanel">
-    <div class="panel-header">
-      <h2>Canva Countdown Studio</h2>
-      <span style="font-size: 0.8rem; color: #64748b;">Custom Embed Link Builder</span>
-    </div>
-
-    <!-- Title & Date Configuration -->
+    
+    <!-- Title & Date -->
     <div class="form-grid">
       <div class="form-group full-width">
         <label for="eventDate">Target Event Date & Time</label>
@@ -257,8 +299,8 @@
       </div>
 
       <div class="form-group">
-        <label for="titleText">Countdown Name / Title</label>
-        <input type="text" id="titleText" value="Until We Say I Do" placeholder="e.g. Until We Say I Do">
+        <label for="titleText">Countdown Title / Couple's Names</label>
+        <input type="text" id="titleText" value="Until We Say I Do">
       </div>
 
       <div class="form-group">
@@ -266,78 +308,59 @@
         <select id="titlePosition">
           <option value="above">Above Numbers</option>
           <option value="below">Below Numbers</option>
-          <option value="none">Hidden / Off</option>
+          <option value="none">Hidden / Off (Numbers only)</option>
         </select>
       </div>
     </div>
 
-    <!-- Units Toggle Section -->
-    <div class="section-title">Units to Display</div>
-    <div class="toggles-grid">
-      <label class="toggle-item"><input type="checkbox" id="showYears"> Years</label>
-      <label class="toggle-item"><input type="checkbox" id="showMonths"> Months</label>
-      <label class="toggle-item"><input type="checkbox" id="showDays" checked> Days</label>
-      <label class="toggle-item"><input type="checkbox" id="showHours" checked> Hours</label>
-      <label class="toggle-item"><input type="checkbox" id="showMins" checked> Mins</label>
-      <label class="toggle-item"><input type="checkbox" id="showSecs" checked> Secs</label>
-    </div>
-
-    <!-- Colors Section -->
-    <div class="section-title">Color Palette</div>
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="titleColor">Name / Title Color</label>
-        <input type="color" id="titleColor" value="#9f7d43">
-      </div>
-
-      <div class="form-group">
-        <label for="textColor">Primary Digits Color</label>
-        <input type="color" id="textColor" value="#3b322a">
-      </div>
-
-      <div class="form-group full-width">
-        <label for="lastDigitColor">Last Digit / Unit Accent Color (Highlights the final ticking unit)</label>
-        <input type="color" id="lastDigitColor" value="#bda061">
-      </div>
-    </div>
-
-    <!-- Typography & Spacing -->
-    <div class="section-title">Design & Canva Layout Spacing</div>
+    <!-- Font Selector Divided by Event Categories -->
+    <div class="section-title">Typography by Event Type</div>
     <div class="form-grid">
       <div class="form-group full-width">
-        <label for="fontSelect">Typography Style (25+ Wedding & Editorial Styles)</label>
+        <label for="fontSelect">Select Event Aesthetic</label>
         <select id="fontSelect">
-          <optgroup label="Luxury & Editorial Serifs">
-            <option value="cormorant" selected>Cormorant Garamond (Timeless Wedding Luxury)</option>
+          <optgroup label="💍 Weddings & Elegance (Luxury Serifs & Scripts)">
+            <option value="cormorant" selected>Cormorant Garamond (Default — Editorial Luxury Serif)</option>
             <option value="cinzel">Cinzel (Regal Classical Roman)</option>
-            <option value="cinzel-dec">Cinzel Decorative (Ornate Serif)</option>
-            <option value="playfair">Playfair Display (High-End Magazine)</option>
-            <option value="bodoni">Bodoni Moda (High Contrast Fashion)</option>
-            <option value="italiana">Italiana (Italian Vogue Style)</option>
-            <option value="prata">Prata (Soft Elegant Serif)</option>
-            <option value="marcellus">Marcellus (Clean Roman Flare)</option>
-            <option value="dm-serif">DM Serif Display (Warm & Bold)</option>
-            <option value="lora">Lora (Contemporary Calligraphic Serif)</option>
-            <option value="spectral">Spectral (Literary & Editorial)</option>
-            <option value="castoro">Castoro Titling (Refined Monumental)</option>
-            <option value="zen-old">Zen Old Mincho (Poetic Antique Serif)</option>
-          </optgroup>
-          <optgroup label="Romantic Calligraphy & Script">
-            <option value="pinyon">Pinyon Script (Classic Aristocratic Calligraphy)</option>
-            <option value="alex-brush">Alex Brush (Flowing Wedding Script)</option>
+            <option value="cinzel-dec">Cinzel Decorative (Flourished Crest Roman)</option>
+            <option value="pinyon">Pinyon Script (Aristocratic Wedding Calligraphy)</option>
+            <option value="alex-brush">Alex Brush (Flowing Ceremony Script)</option>
             <option value="great-vibes">Great Vibes (Formal Graceful Cursive)</option>
-            <option value="allura">Allura (Soft & Feminine Handwriting)</option>
-            <option value="parisienne">Parisienne (Bistro Chic Cursive)</option>
-            <option value="sacramento">Sacramento (Delicate Monoline Script)</option>
-            <option value="tangerine">Tangerine (Tall Flourished Calligraphy)</option>
-            <option value="windsong">WindSong (Artistic Modern Cursive)</option>
-            <option value="delafield">Mrs Saint Delafield (Vintage Ribbon Script)</option>
+            <option value="prata">Prata (Soft High-End Editorial Serif)</option>
           </optgroup>
-          <optgroup label="Clean Modern Sans-Serif">
-            <option value="montserrat">Montserrat (Clean Architectural Sans)</option>
-            <option value="jost">Jost (Minimalist Bauhaus Clean)</option>
-            <option value="outfit">Outfit (Soft Modern Geometric)</option>
-            <option value="quicksand">Quicksand (Friendly Rounded Light)</option>
+
+          <optgroup label="🎂 Birthdays & Milestones (Joyful, Playful & Bold)">
+            <option value="quicksand">Quicksand (Warm, Friendly Rounded Modern)</option>
+            <option value="comfortaa">Comfortaa (Geometric Soft & Celebratory)</option>
+            <option value="fredoka">Fredoka (Fun, Chunky & Cheerful)</option>
+            <option value="shrikhand">Shrikhand (Retro Festive Poster Display)</option>
+            <option value="dm-serif">DM Serif Display (Bold Celebration Serif)</option>
+            <option value="allura">Allura (Charming Sweet 16 / Debut Script)</option>
+          </optgroup>
+
+          <optgroup label="🥂 Anniversaries, Galas & Romance (High Contrast & Drama)">
+            <option value="bodoni">Bodoni Moda (Vogue-Style Fashion Serif)</option>
+            <option value="playfair">Playfair Display (Dramatic Roman Drama)</option>
+            <option value="italiana">Italiana (Ultra-Chic Italian Elegance)</option>
+            <option value="tangerine">Tangerine (Tall Golden Age Calligraphy)</option>
+            <option value="parisienne">Parisienne (Romantic European Bistro Cursive)</option>
+            <option value="windsong">WindSong (Artistic Modern Flourish)</option>
+          </optgroup>
+
+          <optgroup label="🏛️ Corporate, Launches & Conferences (Modern & Architectural)">
+            <option value="montserrat">Montserrat (Clean Universal Architecture)</option>
+            <option value="jost">Jost (German Bauhaus Precision)</option>
+            <option value="outfit">Outfit (Contemporary Clean Tech)</option>
+            <option value="space-grotesk">Space Grotesk (Modernist Product Launch)</option>
+            <option value="castoro">Castoro Titling (Stately Institutional Serif)</option>
+          </optgroup>
+
+          <optgroup label="🍸 Cocktails, Parties & Celebrations (Chic & Casual)">
+            <option value="syne">Syne (Avant-Garde Designer Display)</option>
+            <option value="righteous">Righteous (Art Deco Modern Cocktail)</option>
+            <option value="marcellus">Marcellus (Clean Roman Flare)</option>
+            <option value="lora">Lora (Contemporary Calligraphic Serif)</option>
+            <option value="sacramento">Sacramento (Delicate Cocktail Monoline)</option>
           </optgroup>
         </select>
       </div>
@@ -349,25 +372,72 @@
 
       <div class="form-group">
         <label for="titleSize">Title Font Size (px)</label>
-        <input type="number" id="titleSize" value="16" min="10" max="60">
+        <input type="number" id="titleSize" value="14" min="10" max="60">
+      </div>
+    </div>
+
+    <!-- Units Toggle Grid -->
+    <div class="section-title">Units to Display</div>
+    <div class="toggles-grid">
+      <label class="toggle-item"><input type="checkbox" id="showYears"> Years</label>
+      <label class="toggle-item"><input type="checkbox" id="showMonths"> Months</label>
+      <label class="toggle-item"><input type="checkbox" id="showDays" checked> Days</label>
+      <label class="toggle-item"><input type="checkbox" id="showHours" checked> Hours</label>
+      <label class="toggle-item"><input type="checkbox" id="showMins" checked> Mins</label>
+      <label class="toggle-item"><input type="checkbox" id="showSecs" checked> Secs</label>
+    </div>
+
+    <!-- Color Palette -->
+    <div class="section-title">Palette Harmonization</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="textColor">Primary Digits & Labels Color</label>
+        <input type="color" id="textColor" value="#2e2620">
       </div>
 
       <div class="form-group">
-        <label for="unitGap">Space Between Units (px for Canva artwork)</label>
-        <input type="range" id="unitGap" min="10" max="150" value="60">
-        <span id="unitGapVal" style="font-size: 0.75rem; color: #64748b; text-align: right;">60px gap</span>
+        <label for="lastDigitColor">Last Unit Accent Color (Final ticking digit & label)</label>
+        <input type="color" id="lastDigitColor" value="#b38f4e">
+      </div>
+
+      <div class="form-group full-width">
+        <label for="titleColor">Countdown Title Color</label>
+        <input type="color" id="titleColor" value="#b38f4e">
+      </div>
+    </div>
+
+    <!-- Canva Layout Spacing & Colons -->
+    <div class="section-title">Layout & Canva Integration</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="unitGap">Space Between Columns (px)</label>
+        <input type="range" id="unitGap" min="10" max="150" value="65">
+        <span id="unitGapVal" style="font-size: 0.75rem; color: #78716c; text-align: right;">65px gap</span>
       </div>
 
       <div class="form-group">
         <label for="colonToggle">Colon Separator (:)</label>
         <select id="colonToggle">
-          <option value="false">Off (Empty space for Canva lines/decorations)</option>
-          <option value="true">On (Show ':' between numbers)</option>
+          <option value="false">Off (Clean empty space for Canva lines)</option>
+          <option value="true">On (Show ':' colons between units)</option>
         </select>
       </div>
 
+      <div class="form-group">
+        <label for="showLabels">Unit Labels Below Digits</label>
+        <select id="showLabels">
+          <option value="true">Show Labels (DAYS, HOURS, etc.)</option>
+          <option value="false">Hide Labels (Numbers only)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="labelSize">Label Font Size (px)</label>
+        <input type="number" id="labelSize" value="10" min="8" max="28">
+      </div>
+
       <div class="form-group full-width">
-        <label for="leadingZero">Leading Zero (e.g. 04 vs 4)</label>
+        <label for="leadingZero">Leading Zero Format</label>
         <select id="leadingZero">
           <option value="false">No Leading Zero (4, 10, 28)</option>
           <option value="true">Include Leading Zero (04, 10, 28)</option>
@@ -377,7 +447,7 @@
 
     <!-- Output Section -->
     <div class="output-section">
-      <label>Your Canva Embed Link:</label>
+      <label>Your Ready-to-Embed Canva Link:</label>
       <input type="text" class="output-url" id="generatedLink" readonly>
       <button class="copy-btn" id="copyBtn">Copy Link for Canva</button>
     </div>
@@ -388,47 +458,67 @@
     const isEmbed = urlParams.get('embed') === 'true' || urlParams.has('date');
 
     const fontMap = {
+      // Weddings
       'cormorant': "'Cormorant Garamond', Georgia, serif",
       'cinzel': "'Cinzel', Georgia, serif",
       'cinzel-dec': "'Cinzel Decorative', Georgia, serif",
-      'playfair': "'Playfair Display', Georgia, serif",
-      'bodoni': "'Bodoni Moda', Georgia, serif",
-      'italiana': "'Italiana', Georgia, serif",
-      'prata': "'Prata', Georgia, serif",
-      'marcellus': "'Marcellus', Georgia, serif",
-      'dm-serif': "'DM Serif Display', Georgia, serif",
-      'lora': "'Lora', Georgia, serif",
-      'spectral': "'Spectral', Georgia, serif",
-      'castoro': "'Castoro Titling', Georgia, serif",
-      'zen-old': "'Zen Old Mincho', serif",
       'pinyon': "'Pinyon Script', cursive",
       'alex-brush': "'Alex Brush', cursive",
       'great-vibes': "'Great Vibes', cursive",
+      'prata': "'Prata', Georgia, serif",
+      // Birthdays
+      'quicksand': "'Quicksand', sans-serif",
+      'comfortaa': "'Comfortaa', cursive",
+      'fredoka': "'Fredoka', sans-serif",
+      'shrikhand': "'Shrikhand', cursive",
+      'dm-serif': "'DM Serif Display', Georgia, serif",
       'allura': "'Allura', cursive",
-      'parisienne': "'Parisienne', cursive",
-      'sacramento': "'Sacramento', cursive",
+      // Anniversaries & Romance
+      'bodoni': "'Bodoni Moda', Georgia, serif",
+      'playfair': "'Playfair Display', Georgia, serif",
+      'italiana': "'Italiana', Georgia, serif",
       'tangerine': "'Tangerine', cursive",
+      'parisienne': "'Parisienne', cursive",
       'windsong': "'WindSong', cursive",
-      'delafield': "'Mrs Saint Delafield', cursive",
+      // Corporate & Launches
       'montserrat': "'Montserrat', sans-serif",
       'jost': "'Jost', sans-serif",
       'outfit': "'Outfit', sans-serif",
-      'quicksand': "'Quicksand', sans-serif"
+      'space-grotesk': "'Space Grotesk', sans-serif",
+      'castoro': "'Castoro Titling', Georgia, serif",
+      // Parties & Celebrations
+      'syne': "'Syne', sans-serif",
+      'righteous': "'Righteous', cursive",
+      'marcellus': "'Marcellus', Georgia, serif",
+      'lora': "'Lora', Georgia, serif",
+      'sacramento': "'Sacramento', cursive"
     };
 
+    const labelNames = {
+      'years': 'Years',
+      'months': 'Months',
+      'days': 'Days',
+      'hours': 'Hours',
+      'mins': 'Mins',
+      'secs': 'Secs'
+    };
+
+    // Default configuration (luxurious & balanced out of the box)
     let targetTime = Date.now() + (92 * 86400000);
     let config = {
       title: 'Until We Say I Do',
-      titlePos: 'above', // above, below, none
-      titleColor: '9f7d43',
-      titleSize: 16,
+      titlePos: 'above',
+      titleColor: 'b38f4e',
+      titleSize: 14,
       font: 'cormorant',
-      color: '3b322a',
-      lastColor: 'bda061',
+      color: '2e2620',
+      lastColor: 'b38f4e',
       size: 54,
-      gap: 60,
+      gap: 65,
       colon: false,
       pad: false,
+      labels: true,
+      labelSize: 10,
       years: false,
       months: false,
       days: true,
@@ -440,11 +530,13 @@
     const timerDisplay = document.getElementById('timerDisplay');
     const titleDisplay = document.getElementById('titleDisplay');
     const adminPanel = document.getElementById('adminPanel');
+    const appHeader = document.getElementById('appHeader');
 
     // 1. EMBED MODE (Inside Canva)
     if (isEmbed) {
       document.body.classList.add('is-embed');
       adminPanel.style.display = 'none';
+      appHeader.style.display = 'none';
 
       const dateP = urlParams.get('date');
       if (dateP) targetTime = new Date(dateP).getTime();
@@ -461,6 +553,8 @@
       config.gap = parseInt(urlParams.get('gap')) || config.gap;
       config.colon = urlParams.get('colon') === 'true';
       config.pad = urlParams.get('pad') === 'true';
+      config.labels = urlParams.get('lbl') !== '0';
+      config.labelSize = parseInt(urlParams.get('lblsize')) || config.labelSize;
 
       if (urlParams.has('y')) config.years = urlParams.get('y') === '1';
       if (urlParams.has('m')) config.months = urlParams.get('m') === '1';
@@ -471,10 +565,8 @@
 
       buildDOM();
     } 
-    // 2. ADMIN GENERATOR MODE
+    // 2. GENERATOR STUDIO MODE
     else {
-      document.getElementById('previewContainer').classList.add('preview-box');
-
       const eventDateInput = document.getElementById('eventDate');
       const titleTextInput = document.getElementById('titleText');
       const titlePosInput = document.getElementById('titlePosition');
@@ -489,6 +581,8 @@
       const unitGapVal = document.getElementById('unitGapVal');
       const colonToggle = document.getElementById('colonToggle');
       const leadingZero = document.getElementById('leadingZero');
+      const showLabels = document.getElementById('showLabels');
+      const labelSizeInput = document.getElementById('labelSize');
 
       const showYears = document.getElementById('showYears');
       const showMonths = document.getElementById('showMonths');
@@ -500,6 +594,7 @@
       const generatedLink = document.getElementById('generatedLink');
       const copyBtn = document.getElementById('copyBtn');
 
+      // Set default target to 92 days ahead
       const defaultDate = new Date(Date.now() + (92 * 86400000) + (10 * 3600000));
       defaultDate.setMinutes(defaultDate.getMinutes() - defaultDate.getTimezoneOffset());
       eventDateInput.value = defaultDate.toISOString().slice(0, 16);
@@ -521,6 +616,8 @@
         config.gap = unitGapInput.value;
         config.colon = colonToggle.value === 'true';
         config.pad = leadingZero.value === 'true';
+        config.labels = showLabels.value === 'true';
+        config.labelSize = labelSizeInput.value;
 
         config.years = showYears.checked;
         config.months = showMonths.checked;
@@ -533,6 +630,7 @@
 
         buildDOM();
 
+        // Build clean embed URL
         const base = window.location.origin + window.location.pathname;
         const dateIso = eventDateInput.value ? new Date(eventDateInput.value).toISOString() : '';
         const params = new URLSearchParams({
@@ -548,6 +646,8 @@
           gap: config.gap,
           colon: config.colon,
           pad: config.pad,
+          lbl: config.labels ? '1' : '0',
+          lblsize: config.labelSize,
           y: config.years ? '1' : '0',
           m: config.months ? '1' : '0',
           d: config.days ? '1' : '0',
@@ -573,6 +673,8 @@
       unitGapInput.addEventListener('input', updateFromUI);
       colonToggle.addEventListener('change', updateFromUI);
       leadingZero.addEventListener('change', updateFromUI);
+      showLabels.addEventListener('change', updateFromUI);
+      labelSizeInput.addEventListener('input', updateFromUI);
 
       showYears.addEventListener('change', updateFromUI);
       showMonths.addEventListener('change', updateFromUI);
@@ -584,10 +686,10 @@
       copyBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(generatedLink.value);
         copyBtn.innerText = "Copied to Clipboard!";
-        copyBtn.style.background = "#15803d";
+        copyBtn.style.background = "#b38f4e";
         setTimeout(() => {
           copyBtn.innerText = "Copy Link for Canva";
-          copyBtn.style.background = "#0f172a";
+          copyBtn.style.background = "#1c1917";
         }, 2000);
       });
 
@@ -612,7 +714,7 @@
         }
       }
 
-      // 2. Digits handling
+      // 2. Units & Columns handling
       timerDisplay.innerHTML = '';
       const activeUnits = [];
       if (config.years) activeUnits.push('years');
@@ -624,38 +726,51 @@
 
       activeUnits.forEach((unitKey, index) => {
         const isLast = (index === activeUnits.length - 1);
-        const wrap = document.createElement('div');
-        wrap.className = 'unit-container';
+        const unitColor = isLast ? `#${config.lastColor}` : `#${config.color}`;
+
+        // Create Unit Column
+        const col = document.createElement('div');
+        col.className = 'unit-column';
 
         if (index > 0) {
-          wrap.style.marginLeft = `${config.gap}px`;
+          col.style.marginLeft = `${config.gap}px`;
         }
 
+        // Digit Slot
         const slot = document.createElement('span');
         slot.className = 'num-slot';
         slot.id = `unit-${unitKey}`;
         slot.style.fontFamily = fontMap[config.font] || 'serif';
         slot.style.fontSize = `${config.size}px`;
-        
-        // Color logic: Last unit receives accent color; all others receive primary digits color
-        slot.style.color = isLast ? `#${config.lastColor}` : `#${config.color}`;
+        slot.style.color = unitColor;
         slot.innerText = config.pad ? '00' : '0';
+        col.appendChild(slot);
 
-        wrap.appendChild(slot);
-
-        // Colon separator
-        if (config.colon && !isLast) {
-          const colon = document.createElement('span');
-          colon.className = 'separator-colon';
-          colon.style.fontFamily = fontMap[config.font] || 'serif';
-          colon.style.fontSize = `${Math.round(config.size * 0.85)}px`;
-          colon.style.color = `#${config.color}`;
-          colon.style.marginLeft = `${Math.round(config.gap / 2)}px`;
-          colon.innerText = ':';
-          wrap.appendChild(colon);
+        // Label Slot (matches the color of the unit above)
+        if (config.labels) {
+          const lbl = document.createElement('span');
+          lbl.className = 'unit-label';
+          lbl.style.fontFamily = fontMap[config.font] || 'serif';
+          lbl.style.fontSize = `${config.labelSize}px`;
+          lbl.style.color = unitColor;
+          lbl.innerText = labelNames[unitKey];
+          col.appendChild(lbl);
         }
 
-        timerDisplay.appendChild(wrap);
+        timerDisplay.appendChild(col);
+
+        // Colon Separator (if enabled and not after last unit)
+        if (config.colon && !isLast) {
+          const colon = document.createElement('span');
+          colon.className = 'colon-separator';
+          colon.style.fontFamily = fontMap[config.font] || 'serif';
+          colon.style.fontSize = `${Math.round(config.size * 0.78)}px`;
+          colon.style.color = `#${config.color}`;
+          colon.style.marginLeft = `${Math.round(config.gap / 2)}px`;
+          colon.style.height = `${config.size}px`;
+          colon.innerText = ':';
+          timerDisplay.appendChild(colon);
+        }
       });
 
       renderCalculations();
