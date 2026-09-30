@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Countdown Generator</title>
+  <!-- Curated Google Fonts popular for weddings & invitations -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600&family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* Embedded display mode */
+    body.is-embed {
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* The Countdown Display */
+    .countdown-display {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 100%;
+      max-width: 650px;
+      padding: 10px;
+    }
+
+    .num {
+      text-align: center;
+      flex: 1;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+
+    /* Admin Generator Panel (visible only when configuring) */
+    .generator-panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      width: 90%;
+      max-width: 520px;
+      margin-top: 30px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+      color: #1e293b;
+    }
+
+    .generator-panel h2 {
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #475569;
+    }
+
+    input, select {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      background: #f8fafc;
+    }
+
+    input:focus, select:focus {
+      border-color: #3b82f6;
+      background: #ffffff;
+    }
+
+    .preview-box {
+      border: 1px dashed #cbd5e1;
+      background: #fafaf9; /* subtle warm tint for preview */
+      border-radius: 8px;
+      padding: 20px 0;
+      margin-bottom: 16px;
+    }
+
+    .output-section {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .output-url {
+      width: 100%;
+      padding: 8px 10px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      width: 100%;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #1e293b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Live Countdown Elements -->
+  <div id="previewContainer">
+    <div class="countdown-display" id="timer">
+      <div class="num" id="days">0</div>
+      <div class="num" id="hours">0</div>
+      <div class="num" id="mins">0</div>
+      <div class="num" id="secs">0</div>
+    </div>
+  </div>
+
+  <!-- Admin Generator UI -->
+  <div class="generator-panel" id="adminPanel">
+    <h2>Canva Countdown Link Generator</h2>
+
+    <div class="form-group">
+      <label for="eventDate">Wedding / Event Date & Time</label>
+      <input type="datetime-local" id="eventDate">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="fontSelect">Typography Style</label>
+        <select id="fontSelect">
+          <option value="'Cormorant Garamond', Georgia, serif">Editorial Serif (Cormorant)</option>
+          <option value="'Playfair Display', Georgia, serif">Classic Serif (Playfair)</option>
+          <option value="'Cinzel', Georgia, serif">Roman Roman Caps (Cinzel)</option>
+          <option value="'Alex Brush', cursive">Romantic Calligraphy (Alex Brush)</option>
+          <option value="'Montserrat', sans-serif">Modern Minimalist (Montserrat)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="textColor">Number Color</label>
+        <input type="color" id="textColor" value="#3b322a">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="fontSize">Font Size (px)</label>
+        <input type="number" id="fontSize" value="56" min="20" max="120">
+      </div>
+
+      <div class="form-group">
+        <label for="leadingZero">Leading Zero (e.g. 04 vs 4)</label>
+        <select id="leadingZero">
+          <option value="false">No (e.g. 4)</option>
+          <option value="true">Yes (e.g. 04)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="output-section">
+      <label>Your Canva Embed Link:</label>
+      <input type="text" class="output-url" id="generatedLink" readonly>
+      <button class="copy-btn" id="copyBtn">Copy Link for Canva</button>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const isEmbed = urlParams.get('embed') === 'true' || urlParams.has('date');
+
+    // DOM Elements
+    const adminPanel = document.getElementById('adminPanel');
+    const timer = document.getElementById('timer');
+    const numEls = document.querySelectorAll('.num');
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minsEl = document.getElementById('mins');
+    const secsEl = document.getElementById('secs');
+
+    // Controls
+    const eventDateInput = document.getElementById('eventDate');
+    const fontSelect = document.getElementById('fontSelect');
+    const textColorInput = document.getElementById('textColor');
+    const fontSizeInput = document.getElementById('fontSize');
+    const leadingZeroSelect = document.getElementById('leadingZero');
+    const generatedLinkInput = document.getElementById('generatedLink');
+    const copyBtn = document.getElementById('copyBtn');
+
+    // State Variables
+    let targetTime = Date.now() + (30 * 86400000); // default +30 days
+    let usePad = false;
+
+    // Font mapping helper
+    const fontMap = {
+      'cormorant': "'Cormorant Garamond', Georgia, serif",
+      'playfair': "'Playfair Display', Georgia, serif",
+      'cinzel': "'Cinzel', Georgia, serif",
+      'alex-brush': "'Alex Brush', cursive",
+      'montserrat': "'Montserrat', sans-serif"
+    };
+
+    const reverseFontMap = {
+      "'Cormorant Garamond', Georgia, serif": 'cormorant',
+      "'Playfair Display', Georgia, serif": 'playfair',
+      "'Cinzel', Georgia, serif": 'cinzel',
+      "'Alex Brush', cursive": 'alex-brush',
+      "'Montserrat', sans-serif": 'montserrat'
+    };
+
+    // 1. EMBED MODE DETECTED (Running inside Canva)
+    if (isEmbed) {
+      document.body.classList.add('is-embed');
+      adminPanel.style.display = 'none';
+
+      // Parse parameters from Canva embed URL
+      const dateParam = urlParams.get('date');
+      const colorParam = urlParams.get('color');
+      const fontParam = urlParams.get('font');
+      const sizeParam = urlParams.get('size');
+      const padParam = urlParams.get('pad');
+
+      if (dateParam) targetTime = new Date(dateParam).getTime();
+      if (colorParam) {
+        numEls.forEach(el => el.style.color = `#${colorParam.replace('#', '')}`);
+      }
+      if (fontParam && fontMap[fontParam]) {
+        numEls.forEach(el => el.style.fontFamily = fontMap[fontParam]);
+      }
+      if (sizeParam) {
+        numEls.forEach(el => el.style.fontSize = `${sizeParam}px`);
+      }
+      if (padParam === 'true') {
+        usePad = true;
+      }
+    } 
+    // 2. GENERATOR / ADMIN MODE DETECTED (You building links)
+    else {
+      // Put preview in container
+      document.getElementById('previewContainer').classList.add('preview-box');
+
+      // Set default input date to 30 days ahead
+      const defaultDate = new Date(Date.now() + 30 * 86400000);
+      defaultDate.setMinutes(defaultDate.getMinutes() - defaultDate.getTimezoneOffset());
+      eventDateInput.value = defaultDate.toISOString().slice(0, 16);
+      targetTime = new Date(eventDateInput.value).getTime();
+
+      function updateAdminSettings() {
+        if (eventDateInput.value) {
+          targetTime = new Date(eventDateInput.value).getTime();
+        }
+        usePad = leadingZeroSelect.value === 'true';
+
+        // Apply visual updates to preview
+        numEls.forEach(el => {
+          el.style.fontFamily = fontSelect.value;
+          el.style.color = textColorInput.value;
+          el.style.fontSize = `${fontSizeInput.value}px`;
+        });
+
+        // Build clean embed URL
+        const baseUrl = window.location.origin + window.location.pathname;
+        const fontKey = reverseFontMap[fontSelect.value] || 'cormorant';
+        const hexColor = textColorInput.value.replace('#', '');
+        const dateIso = eventDateInput.value ? new Date(eventDateInput.value).toISOString() : '';
+
+        const embedUrl = `${baseUrl}?date=${encodeURIComponent(dateIso)}&color=${hexColor}&font=${fontKey}&size=${fontSizeInput.value}&pad=${usePad}&embed=true`;
+        generatedLinkInput.value = embedUrl;
+      }
+
+      // Event listeners for instant live editing
+      eventDateInput.addEventListener('input', updateAdminSettings);
+      fontSelect.addEventListener('change', updateAdminSettings);
+      textColorInput.addEventListener('input', updateAdminSettings);
+      fontSizeInput.addEventListener('input', updateAdminSettings);
+      leadingZeroSelect.addEventListener('change', updateAdminSettings);
+
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(generatedLinkInput.value);
+        copyBtn.innerText = "Copied to Clipboard!";
+        copyBtn.style.background = "#15803d"; // green
+        setTimeout(() => {
+          copyBtn.innerText = "Copy Link for Canva";
+          copyBtn.style.background = "#0f172a";
+        }, 2000);
+      });
+
+      updateAdminSettings();
+    }
+
+    // Live Countdown Interval
+    function runTimer() {
+      const diff = targetTime - Date.now();
+
+      if (diff > 0) {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const format = (n) => (usePad && n < 10) ? `0${n}` : n;
+
+        daysEl.innerText = format(days);
+        hoursEl.innerText = format(hours);
+        minsEl.innerText = format(minutes);
+        secsEl.innerText = format(seconds);
+      } else {
+        daysEl.innerText = usePad ? "00" : "0";
+        hoursEl.innerText = usePad ? "00" : "0";
+        minsEl.innerText = usePad ? "00" : "0";
+        secsEl.innerText = usePad ? "00" : "0";
+      }
+    }
+
+    setInterval(runTimer, 1000);
+    runTimer();
+  </script>
+</body>
+</html>
