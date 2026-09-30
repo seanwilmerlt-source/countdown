@@ -2,21 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>When's the date countdown</title>
-
-  <link rel="icon" type="image/png" href="favicon.png">
   
-  <!-- Curated Google Fonts Organized by Event Vibe -->
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Curated Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;1,6..96,400&family=Castoro+Titling&family=Cinzel:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=Comfortaa:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Serif+Display&family=Fredoka:wght@400;600&family=Great+Vibes&family=Italiana&family=Jost:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Marcellus&family=Montserrat:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&family=Parisienne&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Pinyon+Script&family=Prata&family=Quicksand:wght@400;600&family=Righteous&family=Sacramento&family=Shrikhand&family=Space+Grotesk:wght@400;600&family=Spectral:ital,wght@0,400;0,600&family=Syne:wght@500;700&family=Tangerine:wght@700&family=WindSong:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600&family=Castoro+Titling&family=Cinzel:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=Comfortaa:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600&family=DM+Serif+Display&family=Fredoka:wght@400;600&family=Great+Vibes&family=Italiana&family=Jost:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500&family=Marcellus&family=Montserrat:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&family=Parisienne&family=Playfair+Display:ital,wght@0,400;0,600&family=Pinyon+Script&family=Prata&family=Quicksand:wght@400;600&family=Righteous&family=Sacramento&family=Shrikhand&family=Space+Grotesk:wght@400;600&family=Spectral:ital,wght@0,400;0,600&family=Syne:wght@500;700&family=Tangerine:wght@700&family=WindSong:wght@500&display=swap" rel="stylesheet">
 
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -26,9 +31,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       overflow-x: hidden;
       user-select: none;
+      padding: 0 10px;
     }
 
     /* Embedded Mode (Inside Canva) */
@@ -40,17 +46,64 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 0;
     }
 
-    /* App Header (Generator Only) */
+    /* User Status Bar */
+    .user-bar {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      padding: 10px 14px;
+      background: #ffffff;
+      border: 1px solid #e7e5e4;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      gap: 8px;
+    }
+
+    .badge-paid {
+      background: #ecfdf5;
+      color: #065f46;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+
+    .badge-trial {
+      background: #eff6ff;
+      color: #1e40af;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+
+    .btn-signout {
+      background: none;
+      border: none;
+      color: #dc2626;
+      cursor: pointer;
+      font-size: 0.8rem;
+      text-decoration: underline;
+      white-space: nowrap;
+    }
+
     .app-header {
       text-align: center;
-      margin: 40px 0 20px;
+      margin: 20px 0 16px;
+      width: 100%;
     }
 
     .app-header h1 {
       font-family: 'Cinzel', Georgia, serif;
-      font-size: 1.85rem;
+      font-size: clamp(1.3rem, 5vw, 1.85rem);
       letter-spacing: 0.12em;
       color: #1e1b18;
       text-transform: uppercase;
@@ -58,27 +111,26 @@
     }
 
     .app-header p {
-      font-size: 0.88rem;
+      font-size: clamp(0.78rem, 2.5vw, 0.88rem);
       color: #78716c;
-      margin-top: 6px;
-      letter-spacing: 0.04em;
+      margin-top: 4px;
     }
 
     /* Live Preview Stage */
     .preview-stage {
-      width: 95%;
+      width: 100%;
       max-width: 860px;
       background: #faf8f5;
       border: 1px solid #ebd9c8;
       border-radius: 16px;
-      padding: 50px 20px;
-      margin-bottom: 30px;
+      padding: clamp(24px, 5vw, 45px) clamp(10px, 3vw, 20px);
+      margin-bottom: 20px;
       box-shadow: 0 4px 20px -2px rgba(46, 38, 32, 0.05);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow-x: auto;
+      overflow: hidden;
     }
 
     body.is-embed .preview-stage {
@@ -89,37 +141,43 @@
       margin: 0 !important;
       max-width: 100% !important;
       width: 100% !important;
+      height: 100%;
     }
 
-    /* Floating Countdown Container */
     .embed-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       width: 100%;
+      max-width: 100%;
     }
 
     .countdown-title {
       text-align: center;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       line-height: 1.2;
-      transition: color 0.2s ease;
+      width: 100%;
+      word-break: break-word;
     }
 
     .countdown-title.pos-below {
-      margin-top: 20px;
+      margin-top: 14px;
       margin-bottom: 0;
       order: 2;
     }
 
+    /* Rigid No-Scramble Countdown Row */
     .countdown-display {
-      display: inline-flex;
+      display: flex;
+      flex-wrap: nowrap; /* Prevents wrapping onto multiple ugly lines */
       justify-content: center;
       align-items: flex-start;
       order: 1;
+      width: 100%;
+      max-width: 100%;
     }
 
     .unit-column {
@@ -128,25 +186,26 @@
       align-items: center;
       justify-content: center;
       text-align: center;
+      flex-shrink: 1;
+      min-width: 0;
     }
 
-    /* Tabular monospaced numbers to eliminate jitter completely */
     .num-slot {
       text-align: center;
       line-height: 1;
       display: inline-block;
-      min-width: 2.2ch;
+      min-width: 1.8ch;
       font-variant-numeric: tabular-nums;
       -webkit-font-feature-settings: "tnum";
       font-feature-settings: "tnum";
-      transition: color 0.2s ease;
+      white-space: nowrap;
     }
 
     .unit-label {
       text-align: center;
-      line-height: 1;
-      transition: color 0.2s ease;
+      line-height: 1.1;
       font-weight: 500;
+      white-space: nowrap;
     }
 
     .colon-separator {
@@ -157,6 +216,7 @@
       font-weight: 300;
       user-select: none;
       font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
     }
 
     /* Generator Studio Controls */
@@ -164,21 +224,21 @@
       background: #ffffff;
       border: 1px solid #e7e5e4;
       border-radius: 16px;
-      padding: 30px;
-      width: 95%;
+      padding: clamp(16px, 4vw, 28px);
+      width: 100%;
       max-width: 860px;
-      margin-bottom: 60px;
+      margin-bottom: 50px;
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
       color: #1c1917;
     }
 
     .section-title {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: #78716c;
-      margin: 22px 0 12px;
+      margin: 18px 0 10px;
       border-bottom: 1px solid #f5f5f4;
       padding-bottom: 6px;
     }
@@ -186,13 +246,24 @@
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 12px;
+    }
+
+    /* Mobile Responsive Stacking */
+    @media (max-width: 640px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .user-bar {
+        font-size: 0.78rem;
+      }
     }
 
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
 
     .full-width {
@@ -200,7 +271,7 @@
     }
 
     label {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 500;
       color: #44403c;
     }
@@ -212,7 +283,7 @@
       font-size: 0.9rem;
       background: #fafaf9;
       outline: none;
-      color: #1c1917;
+      width: 100%;
     }
 
     input:focus, select:focus {
@@ -222,38 +293,44 @@
 
     .toggles-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
       background: #fafaf9;
-      padding: 14px;
+      padding: 12px;
       border-radius: 10px;
       border: 1px solid #e7e5e4;
+    }
+
+    @media (max-width: 420px) {
+      .toggles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .toggle-item {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       cursor: pointer;
       font-size: 0.85rem;
       color: #292524;
     }
 
     .output-section {
-      margin-top: 24px;
-      padding-top: 20px;
+      margin-top: 20px;
+      padding-top: 16px;
       border-top: 1px solid #e7e5e4;
     }
 
     .output-url {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       font-family: monospace;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       background: #f5f5f4;
       border: 1px solid #d6d3d1;
       border-radius: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       word-break: break-all;
     }
 
@@ -270,21 +347,81 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+    .copy-btn:hover { background: #b38f4e; }
 
-    .copy-btn:hover {
+    /* Modals */
+    .auth-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(28, 25, 23, 0.7);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 15px;
+    }
+
+    .auth-card {
+      background: #ffffff;
+      padding: 30px 22px;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .auth-card h3 { font-family: 'Cinzel', serif; font-size: 1.3rem; color: #1e1b18; margin-bottom: 8px; }
+    .auth-card p { font-size: 0.86rem; color: #57534e; margin-bottom: 20px; line-height: 1.5; }
+
+    .btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: #1e293b;
+    }
+
+    .btn-upgrade {
+      display: block;
+      width: 100%;
       background: #b38f4e;
+      color: #ffffff;
+      padding: 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      margin-top: 12px;
     }
   </style>
 </head>
 <body>
 
-  <!-- App Header (Hidden when embedded) -->
+  <!-- User Bar -->
+  <div class="user-bar" id="userBar" style="display: none;">
+    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+      <span id="userEmailText" style="font-weight: 500;">user@gmail.com</span>
+      <span id="userPlanBadge" class="badge-trial">1 Free Project</span>
+    </div>
+    <button class="btn-signout" id="signOutBtn">Sign Out</button>
+  </div>
+
   <header class="app-header" id="appHeader">
     <h1>When's the date countdown</h1>
     <p>Minimalist, transparent countdown embeds for Canva designs & websites</p>
   </header>
 
-  <!-- Centered Live Countdown Stage -->
+  <!-- Live Countdown Preview -->
   <div class="preview-stage" id="previewStage">
     <div class="embed-wrapper" id="embedWrapper">
       <div class="countdown-title" id="titleDisplay">Until We Say I Do</div>
@@ -292,10 +429,8 @@
     </div>
   </div>
 
-  <!-- Admin Studio Generator -->
+  <!-- Generator Studio Panel -->
   <div class="generator-panel" id="adminPanel">
-    
-    <!-- Title & Date -->
     <div class="form-grid">
       <div class="form-group full-width">
         <label for="eventDate">Target Event Date & Time</label>
@@ -317,49 +452,45 @@
       </div>
     </div>
 
-    <!-- Font Selector Divided by Event Categories -->
+    <!-- Font Selector -->
     <div class="section-title">Typography by Event Type</div>
     <div class="form-grid">
       <div class="form-group full-width">
         <label for="fontSelect">Select Event Aesthetic</label>
         <select id="fontSelect">
           <optgroup label="💍 Weddings & Elegance (Luxury Serifs & Scripts)">
-            <option value="cormorant" selected>Cormorant Garamond (Default — Editorial Luxury Serif)</option>
+            <option value="cormorant" selected>Cormorant Garamond (Default — Luxury Serif)</option>
             <option value="cinzel">Cinzel (Regal Classical Roman)</option>
-            <option value="cinzel-dec">Cinzel Decorative (Flourished Crest Roman)</option>
-            <option value="pinyon">Pinyon Script (Aristocratic Wedding Calligraphy)</option>
+            <option value="cinzel-dec">Cinzel Decorative (Flourished Roman)</option>
+            <option value="pinyon">Pinyon Script (Wedding Calligraphy)</option>
             <option value="alex-brush">Alex Brush (Flowing Ceremony Script)</option>
             <option value="great-vibes">Great Vibes (Formal Graceful Cursive)</option>
             <option value="prata">Prata (Soft High-End Editorial Serif)</option>
           </optgroup>
-
           <optgroup label="🎂 Birthdays & Milestones (Joyful, Playful & Bold)">
-            <option value="quicksand">Quicksand (Warm, Friendly Rounded Modern)</option>
-            <option value="comfortaa">Comfortaa (Geometric Soft & Celebratory)</option>
+            <option value="quicksand">Quicksand (Friendly Rounded Modern)</option>
+            <option value="comfortaa">Comfortaa (Geometric Celebratory)</option>
             <option value="fredoka">Fredoka (Fun, Chunky & Cheerful)</option>
             <option value="shrikhand">Shrikhand (Retro Festive Poster Display)</option>
             <option value="dm-serif">DM Serif Display (Bold Celebration Serif)</option>
-            <option value="allura">Allura (Charming Sweet 16 / Debut Script)</option>
+            <option value="allura">Allura (Debut / Sweet 16 Script)</option>
           </optgroup>
-
-          <optgroup label="🥂 Anniversaries, Galas & Romance (High Contrast & Drama)">
+          <optgroup label="🥂 Anniversaries, Galas & Romance">
             <option value="bodoni">Bodoni Moda (Vogue-Style Fashion Serif)</option>
             <option value="playfair">Playfair Display (Dramatic Roman Drama)</option>
-            <option value="italiana">Italiana (Ultra-Chic Italian Elegance)</option>
-            <option value="tangerine">Tangerine (Tall Golden Age Calligraphy)</option>
-            <option value="parisienne">Parisienne (Romantic European Bistro Cursive)</option>
+            <option value="italiana">Italiana (Italian Vogue Style)</option>
+            <option value="tangerine">Tangerine (Golden Age Calligraphy)</option>
+            <option value="parisienne">Parisienne (Romantic European Bistro)</option>
             <option value="windsong">WindSong (Artistic Modern Flourish)</option>
           </optgroup>
-
-          <optgroup label="🏛️ Corporate, Launches & Conferences (Modern & Architectural)">
+          <optgroup label="🏛️ Corporate, Launches & Conferences">
             <option value="montserrat">Montserrat (Clean Universal Architecture)</option>
             <option value="jost">Jost (German Bauhaus Precision)</option>
             <option value="outfit">Outfit (Contemporary Clean Tech)</option>
-            <option value="space-grotesk">Space Grotesk (Modernist Product Launch)</option>
+            <option value="space-grotesk">Space Grotesk (Modernist Launch)</option>
             <option value="castoro">Castoro Titling (Stately Institutional Serif)</option>
           </optgroup>
-
-          <optgroup label="🍸 Cocktails, Parties & Celebrations (Chic & Casual)">
+          <optgroup label="🍸 Cocktails, Parties & Celebrations">
             <option value="syne">Syne (Avant-Garde Designer Display)</option>
             <option value="righteous">Righteous (Art Deco Modern Cocktail)</option>
             <option value="marcellus">Marcellus (Clean Roman Flare)</option>
@@ -370,7 +501,7 @@
       </div>
 
       <div class="form-group">
-        <label for="fontSize">Digit Font Size (px)</label>
+        <label for="fontSize">Digit Font Size (px on desktop)</label>
         <input type="number" id="fontSize" value="54" min="18" max="150">
       </div>
 
@@ -380,7 +511,7 @@
       </div>
     </div>
 
-    <!-- Units Toggle Grid -->
+    <!-- Units -->
     <div class="section-title">Units to Display</div>
     <div class="toggles-grid">
       <label class="toggle-item"><input type="checkbox" id="showYears"> Years</label>
@@ -391,7 +522,7 @@
       <label class="toggle-item"><input type="checkbox" id="showSecs" checked> Secs</label>
     </div>
 
-    <!-- Color Palette -->
+    <!-- Palette -->
     <div class="section-title">Palette Harmonization</div>
     <div class="form-grid">
       <div class="form-group">
@@ -400,7 +531,7 @@
       </div>
 
       <div class="form-group">
-        <label for="lastDigitColor">Last Unit Accent Color (Final ticking unit & label)</label>
+        <label for="lastDigitColor">Last Unit Accent Color</label>
         <input type="color" id="lastDigitColor" value="#b38f4e">
       </div>
 
@@ -410,7 +541,7 @@
       </div>
     </div>
 
-    <!-- Unit Label Settings -->
+    <!-- Labels & Layout -->
     <div class="section-title">Unit Labels (DAYS, HOURS, etc.)</div>
     <div class="form-grid">
       <div class="form-group">
@@ -424,8 +555,8 @@
       <div class="form-group">
         <label for="labelCasing">Letter Casing</label>
         <select id="labelCasing">
-          <option value="uppercase">ALL CAPS (e.g. DAYS, HOURS)</option>
-          <option value="capitalize">Title Case (e.g. Days, Hours)</option>
+          <option value="uppercase">ALL CAPS (e.g. DAYS)</option>
+          <option value="capitalize">Title Case (e.g. Days)</option>
         </select>
       </div>
 
@@ -435,17 +566,16 @@
       </div>
 
       <div class="form-group">
-        <label for="labelSpacing">Space Between Numbers & Labels (px)</label>
+        <label for="labelSpacing">Space to Labels (px)</label>
         <input type="range" id="labelSpacing" min="4" max="40" value="14">
         <span id="labelSpacingVal" style="font-size: 0.75rem; color: #78716c; text-align: right;">14px</span>
       </div>
     </div>
 
-    <!-- Canva Layout Spacing & Colons -->
-    <div class="section-title">Layout & Canva Integration</div>
+    <div class="section-title">Canva Layout & Dividers</div>
     <div class="form-grid">
       <div class="form-group">
-        <label for="unitGap">Space Between Columns (px)</label>
+        <label for="unitGap">Space Between Columns (px on desktop)</label>
         <input type="range" id="unitGap" min="10" max="150" value="65">
         <span id="unitGapVal" style="font-size: 0.75rem; color: #78716c; text-align: right;">65px gap</span>
       </div>
@@ -454,7 +584,7 @@
         <label for="colonToggle">Colon Separator (:)</label>
         <select id="colonToggle">
           <option value="false">Off (Clean empty space for Canva lines)</option>
-          <option value="true">On (Show ':' colons between units)</option>
+          <option value="true">On (Show ':' colons)</option>
         </select>
       </div>
 
@@ -475,12 +605,54 @@
     </div>
   </div>
 
+  <!-- Sign In Modal -->
+  <div class="auth-overlay" id="signInModal">
+    <div class="auth-card">
+      <h3>Welcome to the Studio</h3>
+      <p>Sign in with your Google account to unlock your <strong>1 Free Project</strong>, or continue with your Annual Pass.</p>
+      <button class="btn-google" id="googleLoginBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        Sign in with Google
+      </button>
+    </div>
+  </div>
+
+  <!-- Upgrade Required Modal (Annual Subscription with ₱150 Base PPP) -->
+  <div class="auth-overlay" id="upgradeModal">
+    <div class="auth-card">
+      <h3>Free Project Limit Reached</h3>
+      <p>You've used your 1 free countdown project. Upgrade to the <strong>Annual Pass</strong> to unlock unlimited custom countdowns for all your Canva client designs.</p>
+
+      <div style="margin-bottom: 14px;">
+        <span id="priceDisplay" style="font-size: 1.6rem; font-weight: 700; color: #1c1917;">₱150.00</span>
+        <span style="font-size: 0.85rem; color: #78716c;">/ year</span>
+      </div>
+
+      <a href="#" id="upgradeCheckoutBtn" target="_blank" class="btn-upgrade">Subscribe for 1 Year</a>
+
+      <div id="localPaymentOption" style="display: none; margin-top: 14px; font-size: 0.85rem;">
+        <a href="YOUR_GCASH_OR_PAYMONGO_LINK" target="_blank" style="color: #0284c7; text-decoration: underline;">
+          Pay directly via GCash / Maya (₱150/yr) &rarr;
+        </a>
+      </div>
+
+      <p style="font-size: 0.75rem; color: #a8a29e; margin-top: 14px;">Access activates automatically upon checkout.</p>
+      <button class="btn-signout" style="margin-top: 10px;" onclick="location.reload()">Refresh Page</button>
+    </div>
+  </div>
+
   <script>
+    // ==========================================
+    // 1. SUPABASE CLIENT
+    // ==========================================
+    const SUPABASE_URL = 'https://YOUR_PROJECT_REF.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     const urlParams = new URLSearchParams(window.location.search);
     const isEmbed = urlParams.get('embed') === 'true' || urlParams.has('date');
 
     const fontMap = {
-      // Weddings
       'cormorant': "'Cormorant Garamond', Georgia, serif",
       'cinzel': "'Cinzel', Georgia, serif",
       'cinzel-dec': "'Cinzel Decorative', Georgia, serif",
@@ -488,27 +660,23 @@
       'alex-brush': "'Alex Brush', cursive",
       'great-vibes': "'Great Vibes', cursive",
       'prata': "'Prata', Georgia, serif",
-      // Birthdays
       'quicksand': "'Quicksand', sans-serif",
       'comfortaa': "'Comfortaa', cursive",
       'fredoka': "'Fredoka', sans-serif",
       'shrikhand': "'Shrikhand', cursive",
       'dm-serif': "'DM Serif Display', Georgia, serif",
       'allura': "'Allura', cursive",
-      // Anniversaries & Romance
       'bodoni': "'Bodoni Moda', Georgia, serif",
       'playfair': "'Playfair Display', Georgia, serif",
       'italiana': "'Italiana', Georgia, serif",
       'tangerine': "'Tangerine', cursive",
       'parisienne': "'Parisienne', cursive",
       'windsong': "'WindSong', cursive",
-      // Corporate & Launches
       'montserrat': "'Montserrat', sans-serif",
       'jost': "'Jost', sans-serif",
       'outfit': "'Outfit', sans-serif",
       'space-grotesk': "'Space Grotesk', sans-serif",
       'castoro': "'Castoro Titling', Georgia, serif",
-      // Parties & Celebrations
       'syne': "'Syne', sans-serif",
       'righteous': "'Righteous', cursive",
       'marcellus': "'Marcellus', Georgia, serif",
@@ -516,16 +684,8 @@
       'sacramento': "'Sacramento', cursive"
     };
 
-    const labelNames = {
-      'years': 'Years',
-      'months': 'Months',
-      'days': 'Days',
-      'hours': 'Hours',
-      'mins': 'Mins',
-      'secs': 'Secs'
-    };
+    const labelNames = { 'years': 'Years', 'months': 'Months', 'days': 'Days', 'hours': 'Hours', 'mins': 'Mins', 'secs': 'Secs' };
 
-    // Default configuration (luxurious & balanced out of the box)
     let targetTime = Date.now() + (92 * 86400000);
     let config = {
       title: 'Until We Say I Do',
@@ -541,7 +701,7 @@
       pad: false,
       labels: true,
       labelSize: 11,
-      labelCase: 'uppercase', // 'uppercase' or 'capitalize'
+      labelCase: 'uppercase',
       labelSpacing: 14,
       years: false,
       months: false,
@@ -555,12 +715,21 @@
     const titleDisplay = document.getElementById('titleDisplay');
     const adminPanel = document.getElementById('adminPanel');
     const appHeader = document.getElementById('appHeader');
+    const userBar = document.getElementById('userBar');
+    const signInModal = document.getElementById('signInModal');
+    const upgradeModal = document.getElementById('upgradeModal');
 
-    // 1. EMBED MODE (Inside Canva)
+    let currentUserProfile = null;
+
+    // ==========================================
+    // 2. EMBED MODE (Transparently Renders in Canva)
+    // ==========================================
     if (isEmbed) {
       document.body.classList.add('is-embed');
       adminPanel.style.display = 'none';
       appHeader.style.display = 'none';
+      userBar.style.display = 'none';
+      signInModal.style.display = 'none';
 
       const dateP = urlParams.get('date');
       if (dateP) targetTime = new Date(dateP).getTime();
@@ -591,8 +760,94 @@
 
       buildDOM();
     } 
-    // 2. GENERATOR STUDIO MODE
+    // ==========================================
+    // 3. GENERATOR STUDIO MODE (Requires Google Auth)
+    // ==========================================
     else {
+      initAuthAndStudio();
+    }
+
+    function hasActiveSubscription(profile) {
+      if (profile.is_admin) return true;
+      if (profile.is_paid) return true;
+      if (profile.subscription_expires_at) {
+        return new Date(profile.subscription_expires_at).getTime() > Date.now();
+      }
+      return false;
+    }
+
+    async function initAuthAndStudio() {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        signInModal.style.display = 'flex';
+        return;
+      }
+
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error || !profile) {
+        signInModal.style.display = 'flex';
+        return;
+      }
+
+      currentUserProfile = profile;
+      userBar.style.display = 'flex';
+      document.getElementById('userEmailText').innerText = profile.email;
+
+      const badge = document.getElementById('userPlanBadge');
+      if (profile.is_admin) {
+        badge.className = 'badge-paid';
+        badge.innerText = '👑 Master Admin (Unlimited)';
+      } else if (hasActiveSubscription(profile)) {
+        const expDate = new Date(profile.subscription_expires_at).toLocaleDateString();
+        badge.className = 'badge-paid';
+        badge.innerText = `✨ Annual Pass (${expDate})`;
+      } else {
+        badge.className = 'badge-trial';
+        badge.innerText = profile.credits_used >= 1 ? 'Trial Used' : '1 Free Project';
+      }
+
+      configurePricingByLocation();
+      setupGeneratorControls();
+    }
+
+    function configurePricingByLocation() {
+      const isPhilippines = Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Manila';
+      const priceDisplay = document.getElementById('priceDisplay');
+      const checkoutBtn = document.getElementById('upgradeCheckoutBtn');
+      const localOption = document.getElementById('localPaymentOption');
+
+      if (isPhilippines) {
+        priceDisplay.innerText = '₱150.00 PHP';
+        checkoutBtn.href = 'https://yourstore.lemonsqueezy.com/buy/annual-sub?discount=PH150';
+        checkoutBtn.innerText = 'Subscribe for 1 Year (₱150/yr)';
+        localOption.style.display = 'block';
+      } else {
+        priceDisplay.innerText = '$8.00 USD';
+        checkoutBtn.href = 'https://yourstore.lemonsqueezy.com/buy/annual-sub';
+        checkoutBtn.innerText = 'Subscribe for 1 Year ($8.00/yr)';
+        localOption.style.display = 'none';
+      }
+    }
+
+    document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+      await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + window.location.pathname }
+      });
+    });
+
+    document.getElementById('signOutBtn').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.reload();
+    });
+
+    function setupGeneratorControls() {
       const eventDateInput = document.getElementById('eventDate');
       const titleTextInput = document.getElementById('titleText');
       const titlePosInput = document.getElementById('titlePosition');
@@ -624,16 +879,13 @@
       const generatedLink = document.getElementById('generatedLink');
       const copyBtn = document.getElementById('copyBtn');
 
-      // Set default target to 92 days ahead
       const defaultDate = new Date(Date.now() + (92 * 86400000) + (10 * 3600000));
       defaultDate.setMinutes(defaultDate.getMinutes() - defaultDate.getTimezoneOffset());
       eventDateInput.value = defaultDate.toISOString().slice(0, 16);
       targetTime = new Date(eventDateInput.value).getTime();
 
       function updateFromUI() {
-        if (eventDateInput.value) {
-          targetTime = new Date(eventDateInput.value).getTime();
-        }
+        if (eventDateInput.value) targetTime = new Date(eventDateInput.value).getTime();
         config.title = titleTextInput.value;
         config.titlePos = titlePosInput.value;
         config.titleColor = titleColorInput.value.replace('#', '');
@@ -664,7 +916,6 @@
 
         buildDOM();
 
-        // Build embed URL
         const base = window.location.origin + window.location.pathname;
         const dateIso = eventDateInput.value ? new Date(eventDateInput.value).toISOString() : '';
         const params = new URLSearchParams({
@@ -696,36 +947,41 @@
         generatedLink.value = `${base}?${params.toString()}`;
       }
 
-      eventDateInput.addEventListener('input', updateFromUI);
-      titleTextInput.addEventListener('input', updateFromUI);
-      titlePosInput.addEventListener('change', updateFromUI);
-      titleColorInput.addEventListener('input', updateFromUI);
-      titleSizeInput.addEventListener('input', updateFromUI);
+      [eventDateInput, titleTextInput, titlePosInput, titleColorInput, titleSizeInput,
+       textColorInput, lastDigitColorInput, fontSelect, fontSizeInput, unitGapInput,
+       colonToggle, leadingZero, showLabels, labelCasing, labelSizeInput, labelSpacingInput,
+       showYears, showMonths, showDays, showHours, showMins, showSecs].forEach(el => {
+        el.addEventListener('input', updateFromUI);
+        el.addEventListener('change', updateFromUI);
+      });
 
-      textColorInput.addEventListener('input', updateFromUI);
-      lastDigitColorInput.addEventListener('input', updateFromUI);
-      fontSelect.addEventListener('change', updateFromUI);
-      fontSizeInput.addEventListener('input', updateFromUI);
-      unitGapInput.addEventListener('input', updateFromUI);
-      colonToggle.addEventListener('change', updateFromUI);
-      leadingZero.addEventListener('change', updateFromUI);
+      // COPY BUTTON LOGIC
+      copyBtn.addEventListener('click', async () => {
+        if (!currentUserProfile) return;
 
-      showLabels.addEventListener('change', updateFromUI);
-      labelCasing.addEventListener('change', updateFromUI);
-      labelSizeInput.addEventListener('input', updateFromUI);
-      labelSpacingInput.addEventListener('input', updateFromUI);
+        const isSubscribed = hasActiveSubscription(currentUserProfile);
 
-      showYears.addEventListener('change', updateFromUI);
-      showMonths.addEventListener('change', updateFromUI);
-      showDays.addEventListener('change', updateFromUI);
-      showHours.addEventListener('change', updateFromUI);
-      showMins.addEventListener('change', updateFromUI);
-      showSecs.addEventListener('change', updateFromUI);
+        if (!isSubscribed && currentUserProfile.credits_used >= 1) {
+          upgradeModal.style.display = 'flex';
+          return;
+        }
 
-      copyBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(generatedLink.value);
         copyBtn.innerText = "Copied to Clipboard!";
         copyBtn.style.background = "#b38f4e";
+
+        if (!isSubscribed && currentUserProfile.credits_used === 0) {
+          currentUserProfile.credits_used = 1;
+          await supabase
+            .from('profiles')
+            .update({ credits_used: 1 })
+            .eq('id', currentUserProfile.id);
+
+          const badge = document.getElementById('userPlanBadge');
+          badge.className = 'badge-trial';
+          badge.innerText = 'Free Credit Used (1/1)';
+        }
+
         setTimeout(() => {
           copyBtn.innerText = "Copy Link for Canva";
           copyBtn.style.background = "#1c1917";
@@ -735,25 +991,23 @@
       updateFromUI();
     }
 
-    // Build the visual elements
+    // ==========================================
+    // 4. RESPONSIVE DOM BUILDER (Zero Scramble)
+    // ==========================================
     function buildDOM() {
-      // 1. Title handling
       if (config.titlePos === 'none' || !config.title) {
         titleDisplay.style.display = 'none';
       } else {
         titleDisplay.style.display = 'block';
         titleDisplay.innerText = config.title;
         titleDisplay.style.color = `#${config.titleColor}`;
-        titleDisplay.style.fontSize = `${config.titleSize}px`;
+        // Scale title smoothly on phones
+        titleDisplay.style.fontSize = `clamp(11px, 2.5vw, ${config.titleSize}px)`;
         titleDisplay.style.fontFamily = fontMap[config.font] || 'serif';
-        if (config.titlePos === 'below') {
-          titleDisplay.classList.add('pos-below');
-        } else {
-          titleDisplay.classList.remove('pos-below');
-        }
+        if (config.titlePos === 'below') titleDisplay.classList.add('pos-below');
+        else titleDisplay.classList.remove('pos-below');
       }
 
-      // 2. Units & Columns handling
       timerDisplay.innerHTML = '';
       const activeUnits = [];
       if (config.years) activeUnits.push('years');
@@ -763,62 +1017,63 @@
       if (config.mins) activeUnits.push('mins');
       if (config.secs) activeUnits.push('secs');
 
+      const unitCount = activeUnits.length;
+      // Auto-calculate safe responsive gaps so 5-6 units don't burst off mobile screens
+      const isMobile = window.innerWidth < 640;
+      const responsiveGap = `clamp(8px, ${Math.max(1, 14 / unitCount)}vw, ${config.gap}px)`;
+      const colonGap = `clamp(4px, ${Math.max(0.5, 7 / unitCount)}vw, ${Math.round(config.gap / 2)}px)`;
+      // Auto-calculate safe responsive font size
+      const maxAllowedSize = unitCount > 4 ? Math.min(config.size, 44) : config.size;
+      const responsiveFontSize = `clamp(22px, ${Math.max(4, 38 / unitCount)}vw, ${maxAllowedSize}px)`;
+      const responsiveLabelSize = `clamp(8px, 1.8vw, ${config.labelSize}px)`;
+
       activeUnits.forEach((unitKey, index) => {
         const isLast = (index === activeUnits.length - 1);
         const unitColor = isLast ? `#${config.lastColor}` : `#${config.color}`;
 
-        // Create Unit Column
         const col = document.createElement('div');
         col.className = 'unit-column';
+        if (index > 0) col.style.marginLeft = responsiveGap;
 
-        if (index > 0) {
-          col.style.marginLeft = `${config.gap}px`;
-        }
-
-        // Digit Slot
         const slot = document.createElement('span');
         slot.className = 'num-slot';
         slot.id = `unit-${unitKey}`;
         slot.style.fontFamily = fontMap[config.font] || 'serif';
-        slot.style.fontSize = `${config.size}px`;
+        slot.style.fontSize = responsiveFontSize;
         slot.style.color = unitColor;
         slot.innerText = config.pad ? '00' : '0';
         col.appendChild(slot);
 
-        // Label Slot (matches the color of the unit above)
         if (config.labels) {
           const lbl = document.createElement('span');
           lbl.className = 'unit-label';
           lbl.style.fontFamily = fontMap[config.font] || 'serif';
-          lbl.style.fontSize = `${config.labelSize}px`;
+          lbl.style.fontSize = responsiveLabelSize;
           lbl.style.color = unitColor;
-          lbl.style.marginTop = `${config.labelSpacing}px`;
+          lbl.style.marginTop = `clamp(4px, 1.5vw, ${config.labelSpacing}px)`;
 
-          // Handle casing
           if (config.labelCase === 'capitalize') {
             lbl.style.textTransform = 'capitalize';
-            lbl.style.letterSpacing = '0.08em'; // readable letter-spacing for cursive/title case
+            lbl.style.letterSpacing = '0.06em';
             lbl.innerText = labelNames[unitKey];
           } else {
             lbl.style.textTransform = 'uppercase';
-            lbl.style.letterSpacing = '0.22em';
+            lbl.style.letterSpacing = '0.18em';
             lbl.innerText = labelNames[unitKey].toUpperCase();
           }
-
           col.appendChild(lbl);
         }
 
         timerDisplay.appendChild(col);
 
-        // Colon Separator (if enabled and not after last unit)
         if (config.colon && !isLast) {
           const colon = document.createElement('span');
           colon.className = 'colon-separator';
           colon.style.fontFamily = fontMap[config.font] || 'serif';
-          colon.style.fontSize = `${Math.round(config.size * 0.78)}px`;
+          colon.style.fontSize = `calc(${responsiveFontSize} * 0.75)`;
           colon.style.color = `#${config.color}`;
-          colon.style.marginLeft = `${Math.round(config.gap / 2)}px`;
-          colon.style.height = `${config.size}px`;
+          colon.style.marginLeft = colonGap;
+          colon.style.height = responsiveFontSize;
           colon.innerText = ':';
           timerDisplay.appendChild(colon);
         }
@@ -827,7 +1082,6 @@
       renderCalculations();
     }
 
-    // Interval Calculation
     function renderCalculations() {
       const now = new Date();
       const target = new Date(targetTime);
@@ -851,12 +1105,8 @@
             while (true) {
               let nextMonth = new Date(tempDate.getTime());
               nextMonth.setMonth(nextMonth.getMonth() + 1);
-              if (nextMonth <= target) {
-                m++;
-                tempDate = nextMonth;
-              } else {
-                break;
-              }
+              if (nextMonth <= target) { m++; tempDate = nextMonth; }
+              else break;
             }
             months = m;
           }
@@ -878,6 +1128,9 @@
       if (config.mins && document.getElementById('unit-mins')) document.getElementById('unit-mins').innerText = format(minutes);
       if (config.secs && document.getElementById('unit-secs')) document.getElementById('unit-secs').innerText = format(seconds);
     }
+
+    // Re-adjust fluid scale if orientation changes on phone (Portrait <-> Landscape)
+    window.addEventListener('resize', buildDOM);
 
     setInterval(renderCalculations, 1000);
   </script>
