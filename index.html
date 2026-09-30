@@ -62,7 +62,7 @@
       letter-spacing: 0.04em;
     }
 
-    /* Live Preview Stage (Placed Prominently in Center) */
+    /* Live Preview Stage */
     .preview-stage {
       width: 95%;
       max-width: 860px;
@@ -108,7 +108,7 @@
     }
 
     .countdown-title.pos-below {
-      margin-top: 18px;
+      margin-top: 20px;
       margin-bottom: 0;
       order: 2;
     }
@@ -128,19 +128,20 @@
       text-align: center;
     }
 
+    /* Tabular monospaced numbers to eliminate jitter completely */
     .num-slot {
       text-align: center;
       line-height: 1;
       display: inline-block;
-      min-width: 1.15ch;
+      min-width: 2.2ch;
+      font-variant-numeric: tabular-nums;
+      -webkit-font-feature-settings: "tnum";
+      font-feature-settings: "tnum";
       transition: color 0.2s ease;
     }
 
     .unit-label {
       text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 0.25em;
-      margin-top: 8px;
       line-height: 1;
       transition: color 0.2s ease;
       font-weight: 500;
@@ -153,6 +154,7 @@
       line-height: 1;
       font-weight: 300;
       user-select: none;
+      font-variant-numeric: tabular-nums;
     }
 
     /* Generator Studio Controls */
@@ -299,7 +301,7 @@
       </div>
 
       <div class="form-group">
-        <label for="titleText">Countdown Title / Couple's Names</label>
+        <label for="titleText">Countdown Title / Names</label>
         <input type="text" id="titleText" value="Until We Say I Do">
       </div>
 
@@ -396,13 +398,44 @@
       </div>
 
       <div class="form-group">
-        <label for="lastDigitColor">Last Unit Accent Color (Final ticking digit & label)</label>
+        <label for="lastDigitColor">Last Unit Accent Color (Final ticking unit & label)</label>
         <input type="color" id="lastDigitColor" value="#b38f4e">
       </div>
 
       <div class="form-group full-width">
         <label for="titleColor">Countdown Title Color</label>
         <input type="color" id="titleColor" value="#b38f4e">
+      </div>
+    </div>
+
+    <!-- Unit Label Settings -->
+    <div class="section-title">Unit Labels (DAYS, HOURS, etc.)</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="showLabels">Unit Labels Display</label>
+        <select id="showLabels">
+          <option value="true">Show Labels</option>
+          <option value="false">Hide Labels (Numbers only)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="labelCasing">Letter Casing</label>
+        <select id="labelCasing">
+          <option value="uppercase">ALL CAPS (e.g. DAYS, HOURS)</option>
+          <option value="capitalize">Title Case (e.g. Days, Hours)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="labelSize">Label Font Size (px)</label>
+        <input type="number" id="labelSize" value="11" min="8" max="28">
+      </div>
+
+      <div class="form-group">
+        <label for="labelSpacing">Space Between Numbers & Labels (px)</label>
+        <input type="range" id="labelSpacing" min="4" max="40" value="14">
+        <span id="labelSpacingVal" style="font-size: 0.75rem; color: #78716c; text-align: right;">14px</span>
       </div>
     </div>
 
@@ -421,19 +454,6 @@
           <option value="false">Off (Clean empty space for Canva lines)</option>
           <option value="true">On (Show ':' colons between units)</option>
         </select>
-      </div>
-
-      <div class="form-group">
-        <label for="showLabels">Unit Labels Below Digits</label>
-        <select id="showLabels">
-          <option value="true">Show Labels (DAYS, HOURS, etc.)</option>
-          <option value="false">Hide Labels (Numbers only)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="labelSize">Label Font Size (px)</label>
-        <input type="number" id="labelSize" value="10" min="8" max="28">
       </div>
 
       <div class="form-group full-width">
@@ -518,7 +538,9 @@
       colon: false,
       pad: false,
       labels: true,
-      labelSize: 10,
+      labelSize: 11,
+      labelCase: 'uppercase', // 'uppercase' or 'capitalize'
+      labelSpacing: 14,
       years: false,
       months: false,
       days: true,
@@ -555,6 +577,8 @@
       config.pad = urlParams.get('pad') === 'true';
       config.labels = urlParams.get('lbl') !== '0';
       config.labelSize = parseInt(urlParams.get('lblsize')) || config.labelSize;
+      config.labelCase = urlParams.get('lblcase') || config.labelCase;
+      config.labelSpacing = parseInt(urlParams.get('lblspace')) || config.labelSpacing;
 
       if (urlParams.has('y')) config.years = urlParams.get('y') === '1';
       if (urlParams.has('m')) config.months = urlParams.get('m') === '1';
@@ -581,8 +605,12 @@
       const unitGapVal = document.getElementById('unitGapVal');
       const colonToggle = document.getElementById('colonToggle');
       const leadingZero = document.getElementById('leadingZero');
+
       const showLabels = document.getElementById('showLabels');
+      const labelCasing = document.getElementById('labelCasing');
       const labelSizeInput = document.getElementById('labelSize');
+      const labelSpacingInput = document.getElementById('labelSpacing');
+      const labelSpacingVal = document.getElementById('labelSpacingVal');
 
       const showYears = document.getElementById('showYears');
       const showMonths = document.getElementById('showMonths');
@@ -616,8 +644,11 @@
         config.gap = unitGapInput.value;
         config.colon = colonToggle.value === 'true';
         config.pad = leadingZero.value === 'true';
+
         config.labels = showLabels.value === 'true';
+        config.labelCase = labelCasing.value;
         config.labelSize = labelSizeInput.value;
+        config.labelSpacing = labelSpacingInput.value;
 
         config.years = showYears.checked;
         config.months = showMonths.checked;
@@ -627,10 +658,11 @@
         config.secs = showSecs.checked;
 
         unitGapVal.innerText = `${config.gap}px gap`;
+        labelSpacingVal.innerText = `${config.labelSpacing}px`;
 
         buildDOM();
 
-        // Build clean embed URL
+        // Build embed URL
         const base = window.location.origin + window.location.pathname;
         const dateIso = eventDateInput.value ? new Date(eventDateInput.value).toISOString() : '';
         const params = new URLSearchParams({
@@ -648,6 +680,8 @@
           pad: config.pad,
           lbl: config.labels ? '1' : '0',
           lblsize: config.labelSize,
+          lblcase: config.labelCase,
+          lblspace: config.labelSpacing,
           y: config.years ? '1' : '0',
           m: config.months ? '1' : '0',
           d: config.days ? '1' : '0',
@@ -673,8 +707,11 @@
       unitGapInput.addEventListener('input', updateFromUI);
       colonToggle.addEventListener('change', updateFromUI);
       leadingZero.addEventListener('change', updateFromUI);
+
       showLabels.addEventListener('change', updateFromUI);
+      labelCasing.addEventListener('change', updateFromUI);
       labelSizeInput.addEventListener('input', updateFromUI);
+      labelSpacingInput.addEventListener('input', updateFromUI);
 
       showYears.addEventListener('change', updateFromUI);
       showMonths.addEventListener('change', updateFromUI);
@@ -753,7 +790,19 @@
           lbl.style.fontFamily = fontMap[config.font] || 'serif';
           lbl.style.fontSize = `${config.labelSize}px`;
           lbl.style.color = unitColor;
-          lbl.innerText = labelNames[unitKey];
+          lbl.style.marginTop = `${config.labelSpacing}px`;
+
+          // Handle casing
+          if (config.labelCase === 'capitalize') {
+            lbl.style.textTransform = 'capitalize';
+            lbl.style.letterSpacing = '0.08em'; // readable letter-spacing for cursive/title case
+            lbl.innerText = labelNames[unitKey];
+          } else {
+            lbl.style.textTransform = 'uppercase';
+            lbl.style.letterSpacing = '0.22em';
+            lbl.innerText = labelNames[unitKey].toUpperCase();
+          }
+
           col.appendChild(lbl);
         }
 
